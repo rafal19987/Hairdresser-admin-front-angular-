@@ -1,23 +1,35 @@
 <div class="login-container">
-  <form (ngSubmit)="login()">
-    <label for="username">Username:</label>
-    <input
-      type="text"
-      id="username"
-      [(ngModel)]="username"
-      name="username"
-      required
-    />
+  @if (loginForm) {
+    <form class="flex flex-col gap-4 max-w-xl left-o right-0 mx-auto" [formGroup]="loginForm">
+      <mat-form-field
+        >
+        <mat-label>Login:</mat-label>
+        <input
+        matInput
+        id="username"
+        type="text"
+        [formControlName]="'username'"
+        />
+      </mat-form-field>
+      @if (loginForm.get('username')?.getError('required')) {
+        <span>To pole jest wymagane</span>
+      }
 
-    <label for="password">Password:</label>
-    <input
-      type="password"
-      id="password"
-      [(ngModel)]="password"
-      name="password"
-      required
-    />
+      <mat-form-field
+      >
+        <mat-label>Hasło:</mat-label>
+        <input
+          matInput
+          id="password"
+          type="password"
+          [formControlName]="'password'"
+        />
+      </mat-form-field>
+      @if (loginForm.get('password')?.getError('required')) {
+        <span>To pole jest wymagane</span>
+      }
 
-    <button type="submit">Login</button>
-  </form>
+      <button (click)="login($event)" type="submit">Login</button>
+    </form>
+  }
 </div>
