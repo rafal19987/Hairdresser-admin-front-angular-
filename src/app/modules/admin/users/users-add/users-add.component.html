@@ -3,7 +3,7 @@
     class="flex flex-col gap-4 max-w-xl mx-auto"
     [formGroup]="createUserForm"
     (ngSubmit)="onSubmit()"
-  >
+    >
     <p>Form Status: {{ createUserForm.status }}</p>
     <div class="flex flex-col gap-1">
       <mat-form-field>
@@ -14,75 +14,83 @@
           matInput
           placeholder="np. Jan"
           required
-        />
-        <mat-error *ngIf="createUserForm.get('firstName')?.invalid">
-          {{ getErrorMessage("firstName") }}
-        </mat-error>
+          />
+          @if (createUserForm.get('firstName')?.invalid) {
+            <mat-error>
+              {{ getErrorMessage("firstName") }}
+            </mat-error>
+          }
 
-        <!-- @if (firstName.invalid) {
-      <mat-error>{{ errorMessage() }}</mat-error>
-      } -->
-      </mat-form-field>
+          <!-- @if (firstName.invalid) {
+          <mat-error>{{ errorMessage() }}</mat-error>
+          } -->
+        </mat-form-field>
 
-      <mat-form-field>
-        <mat-label for="lastName" class="">Nazwisko:</mat-label>
-        <input
-          formControlName="lastName"
-          id="lastName"
-          matInput
-          placeholder="np. Kowalski"
-          required
-        />
-        <!-- @if (firstName.invalid) {
-      <mat-error>{{ errorMessage() }}</mat-error>
-      } -->
-        <mat-error *ngIf="createUserForm.get('lastName')?.invalid">
-          {{ getErrorMessage("lastName") }}
-        </mat-error>
-      </mat-form-field>
+        <mat-form-field>
+          <mat-label for="lastName" class="">Nazwisko:</mat-label>
+          <input
+            formControlName="lastName"
+            id="lastName"
+            matInput
+            placeholder="np. Kowalski"
+            required
+            />
+            <!-- @if (firstName.invalid) {
+            <mat-error>{{ errorMessage() }}</mat-error>
+            } -->
+            @if (createUserForm.get('lastName')?.invalid) {
+              <mat-error>
+                {{ getErrorMessage("lastName") }}
+              </mat-error>
+            }
+          </mat-form-field>
 
-      <mat-form-field>
-        <mat-label for="email" class="">E-mail:</mat-label>
-        <input
-          formControlName="email"
-          id="email"
-          matInput
-          placeholder="np. j.kowalski@gmail.com"
-          required
-        />
-        <!-- @if (firstName.invalid) {
-      <mat-error>{{ errorMessage() }}</mat-error>
-      } -->
-        <mat-error *ngIf="createUserForm.get('email')?.invalid">
-          {{ getErrorMessage("email") }}
-        </mat-error>
-      </mat-form-field>
+          <mat-form-field>
+            <mat-label for="email" class="">E-mail:</mat-label>
+            <input
+              formControlName="email"
+              id="email"
+              matInput
+              placeholder="np. j.kowalski@gmail.com"
+              required
+              />
+              <!-- @if (firstName.invalid) {
+              <mat-error>{{ errorMessage() }}</mat-error>
+              } -->
+              @if (createUserForm.get('email')?.invalid) {
+                <mat-error>
+                  {{ getErrorMessage("email") }}
+                </mat-error>
+              }
+            </mat-form-field>
 
-      <mat-form-field>
-        <mat-label for="password" class="">Hasło:</mat-label>
-        <input
-          formControlName="password"
-          id="password"
-          matInput
-          type="password"
-          placeholder="Hasło"
-          required
-        />
-        <!-- @if (firstName.invalid) {
-      <mat-error>{{ errorMessage() }}</mat-error>
-      } -->
-        <mat-error *ngIf="createUserForm.get('password')?.invalid">
-          {{ getErrorMessage("password") }}
-        </mat-error>
-      </mat-form-field>
-    </div>
+            <mat-form-field>
+              <mat-label for="password" class="">Hasło:</mat-label>
+              <input
+                formControlName="password"
+                id="password"
+                matInput
+                type="password"
+                placeholder="Hasło"
+                required
+                />
+                <!-- @if (firstName.invalid) {
+                <mat-error>{{ errorMessage() }}</mat-error>
+                } -->
+                @if (createUserForm.get('password')?.invalid) {
+                  <mat-error>
+                    {{ getErrorMessage("password") }}
+                  </mat-error>
+                }
+              </mat-form-field>
+            </div>
 
-    <button
-      class="px-6 py-4 bg-fuchsia-300 disabled:bg-neutral-500 text-black disabled:text-neutral-700 hover:bg-fuchsia-400 transition-colors disabled:cursor-not-allowed rounded-full"
-      type="submit"
-      [disabled]="!createUserForm.valid"
-    >
-      Send
-    </button>
-  </form>
-</div>
+            <button
+              class="px-6 py-4 bg-fuchsia-300 disabled:bg-neutral-500 text-black disabled:text-neutral-700 hover:bg-fuchsia-400 transition-colors disabled:cursor-not-allowed rounded-full"
+              type="submit"
+              [disabled]="!createUserForm.valid"
+              >
+              Send
+            </button>
+          </form>
+        </div>
