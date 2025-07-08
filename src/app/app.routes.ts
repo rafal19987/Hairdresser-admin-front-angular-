@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './layout/dashboard/dashboard.component';
-import { LoginComponent } from './auth/login/login.component';
-import { AuthGuard } from './auth/auth.guard';
-import { AuthRedirectGuard } from './auth/auth-redirect.guard';
+import {AuthGuard} from '@/app/core/auth/auth.guard';
+import {AuthRedirectGuard} from '@/app/core/auth/auth-redirect.guard';
+import {LoginComponent} from '@/app/core/auth/login/login.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -18,15 +18,13 @@ export const routes: Routes = [
     children: [
       {
         path: 'users-list',
-        loadComponent: () =>
-          import('./admin/users/users-list/users-list.component').then(
-            (m) => m.UsersListComponent
-          ),
+        loadChildren: () =>
+          import('./modules/admin/users/users.routes').then((m) => m.default)
       },
       {
         path: 'users-add',
         loadComponent: () =>
-          import('./admin/users/users-add/users-add.component').then(
+          import('./modules/admin/users/users-add/users-add.component').then(
             (m) => m.UsersAddComponent
           ),
       },
