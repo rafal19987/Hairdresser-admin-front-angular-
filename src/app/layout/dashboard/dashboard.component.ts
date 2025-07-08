@@ -5,10 +5,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import {Router, RouterModule} from '@angular/router';
-import { AuthService } from '../../auth/auth.service';
 import { NgIf } from '@angular/common';
 import {catchError} from 'rxjs/operators';
 import {EMPTY} from 'rxjs';
+import {AuthService} from '@/app/core/auth/auth.service';
 
 @Component({
   selector: 'dashboard-layout',
