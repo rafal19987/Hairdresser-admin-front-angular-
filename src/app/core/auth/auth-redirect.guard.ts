@@ -10,9 +10,9 @@ export class AuthRedirectGuard implements CanActivate {
   canActivate(): boolean {
     const token = localStorage.getItem('accessToken');
     if (token) {
-      this.router.navigate(['/dashboard']); // Przekierowanie na dashboard
-      return false; // Blokowanie dostępu do login
+      this.router.navigate(['/dashboard']);
+      return false;
     }
-    return true; // Dostęp do /login, jeśli brak tokena
+    return true;
   }
 }

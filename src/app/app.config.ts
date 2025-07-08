@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { authInterceptor } from './auth/auth-interceptor.service';
+import {authInterceptor} from '@/app/core/auth/auth-interceptor.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
