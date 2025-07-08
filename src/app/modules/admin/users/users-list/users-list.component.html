@@ -1,0 +1,47 @@
+<div class="p-4">
+  <h2 class="text-xl font-semibold mb-4">Lista użytkowników</h2>
+
+  <table
+    class="table-auto w-full border-collapse border border-gray-200"
+  >
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="border border-gray-200 px-4 py-2 text-left">ID</th>
+        <th class="border border-gray-200 px-4 py-2 text-left">Imię</th>
+        <th class="border border-gray-200 px-4 py-2 text-left">Email</th>
+        <th class="border border-gray-200 px-4 py-2 text-left">Rola</th>
+        <th class="border border-gray-200 px-4 py-2 text-left">Akcje</th>
+      </tr>
+    </thead>
+    <tbody>
+        @if (users()?.length) {
+          @for (user of users(); track user.uuid)
+          {
+            <tr class="even:bg-slate-100">
+            <td class="border border-gray-200 px-4 py-2">{{ user.uuid }}</td>
+            <td class="border border-gray-200 px-4 py-2">{{ user?.firstName ? user.firstName : 'Brak' }}</td>
+            <td class="border border-gray-200 px-4 py-2">{{ user.email }}</td>
+            <td class="border border-gray-200 px-4 py-2">{{ user?.role ? user?.role?.name : 'Brak' }}</td>
+            <td class="border border-gray-200 px-4 py-2 text-center">
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="showDetails(user)">
+                  <mat-icon>info</mat-icon>
+                  <span>Zobacz szczegóły</span>
+                </button>
+                            <button mat-menu-item (click)="confirmDelete(user)">
+                              <mat-icon>delete</mat-icon>
+                              <span>Usuń użytkownika</span>
+                            </button>
+              </mat-menu>
+            </td>
+            </tr>
+          }
+        } @else {
+          <td class="border border-gray-200 px-4 py-2">Brak użytkowników do wyświetlenia</td>
+        }
+    </tbody>
+  </table>
+</div>
