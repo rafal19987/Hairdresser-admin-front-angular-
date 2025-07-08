@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -9,15 +8,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormBuilder } from '@angular/forms';
 import {
-  FormControl,
-  FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { merge } from 'rxjs';
 import { MatLabel } from '@angular/material/form-field';
-import { NgIf } from '@angular/common';
+
 
 @Component({
   selector: 'app-users-add',
@@ -28,9 +24,8 @@ import { NgIf } from '@angular/common';
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
-    MatLabel,
-    NgIf,
-  ],
+    MatLabel
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersAddComponent {

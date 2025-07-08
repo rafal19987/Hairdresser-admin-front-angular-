@@ -5,7 +5,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import {Router, RouterModule} from '@angular/router';
-import { NgIf } from '@angular/common';
 import {catchError} from 'rxjs/operators';
 import {EMPTY} from 'rxjs';
 import {AuthService} from '@/app/core/auth/auth.service';
@@ -20,9 +19,8 @@ import {AuthService} from '@/app/core/auth/auth.service';
     MatListModule,
     MatIconModule,
     MatButtonModule,
-    RouterModule,
-    NgIf,
-  ],
+    RouterModule
+],
 })
 export class DashboardComponent {
   isSidebarOpen = true;
