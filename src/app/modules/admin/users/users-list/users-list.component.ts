@@ -33,7 +33,7 @@ export class UsersListComponent implements OnInit {
   private readonly _dialog = inject(MatDialog);
   private readonly _changeDetectorRef = inject(ChangeDetectorRef);
 
-  readonly users: Signal<User[] | null> = this._userService.users;
+  readonly users: Signal<User[] | null> = this._userService.$users;
 
 
   ngOnInit(): void {

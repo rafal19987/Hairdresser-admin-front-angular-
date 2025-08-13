@@ -6,7 +6,6 @@
   >
     <thead>
       <tr class="bg-gray-100">
-        <th class="border border-gray-200 px-4 py-2 text-left">ID</th>
         <th class="border border-gray-200 px-4 py-2 text-left">Imię</th>
         <th class="border border-gray-200 px-4 py-2 text-left">Email</th>
         <th class="border border-gray-200 px-4 py-2 text-left">Rola</th>
@@ -18,10 +17,9 @@
           @for (user of users(); track user.uuid)
           {
             <tr class="even:bg-slate-100">
-            <td class="border border-gray-200 px-4 py-2">{{ user.uuid }}</td>
             <td class="border border-gray-200 px-4 py-2">{{ user?.firstName ? user.firstName : 'Brak' }}</td>
             <td class="border border-gray-200 px-4 py-2">{{ user.email }}</td>
-            <td class="border border-gray-200 px-4 py-2">{{ user?.role ? user?.role?.name : 'Brak' }}</td>
+            <td class="border border-gray-200 px-4 py-2">{{ user?.role ? user?.role?.displayName : 'Brak' }}</td>
             <td class="border border-gray-200 px-4 py-2 text-center">
               <button mat-icon-button [matMenuTriggerFor]="menu">
                 <mat-icon>more_vert</mat-icon>

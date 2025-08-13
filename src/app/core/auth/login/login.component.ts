@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import {HttpStatusCode} from '@angular/common/http';
 import { Router } from '@angular/router';
-import {FormBuilder, FormsModule, ReactiveFormsModule, UntypedFormGroup, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {AuthService} from '../auth.service';
 import {finalize} from 'rxjs';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
@@ -18,6 +18,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatButton} from '@angular/material/button';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import { User } from '@/app/core/user/user.types';
 
 
 @Component({
@@ -37,8 +38,7 @@ export class LoginComponent implements OnInit {
   private readonly _changeDetectorRef = inject(ChangeDetectorRef);
   private readonly _snackBar = inject(MatSnackBar);
 
-  loginForm!: UntypedFormGroup;
-
+  loginForm!: FormGroup;
 
   ngOnInit(): void {
     this._initializeForm()
@@ -73,14 +73,18 @@ export class LoginComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (res: {accessToken: string, refreshToken: string, userId: string}) => {
+        next: (res: {accessToken: string, refreshToken: string, user: User}) => {
           this._router.navigate(['/dashboard']);
           this._snackBar.open('Zalogowano poprawnie' , undefined,  {
+            horizontalPosition: 'right',
+            verticalPosition: 'top',
             duration: 2000
           });
         },
         error: (err: {error: { message: string, statusCode: HttpStatusCode}}) => {
           this._snackBar.open(err.error.message || 'Błąd logowania', undefined,  {
+            horizontalPosition: 'right',
+            verticalPosition: 'top',
             duration: 2000
           });
           this._changeDetectorRef.markForCheck();

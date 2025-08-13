@@ -1,4 +1,5 @@
 import {
+  APP_INITIALIZER,
   ApplicationConfig,
   importProvidersFrom,
   provideZoneChangeDetection,
@@ -10,6 +11,7 @@ import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {authInterceptor} from '@/app/core/auth/auth-interceptor.service';
+import { initializeApp } from '@/app/core/app.provider';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,5 +20,10 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(withInterceptors([authInterceptor])),
     importProvidersFrom(FormsModule),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      multi: true
+    }
   ],
 };

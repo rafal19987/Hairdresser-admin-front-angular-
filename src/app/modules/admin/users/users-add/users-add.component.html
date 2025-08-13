@@ -6,7 +6,7 @@
     >
     <p>Form Status: {{ createUserForm.status }}</p>
     <div class="flex flex-col gap-1">
-      <mat-form-field>
+      <mat-form-field [floatLabel]="'always'" [appearance]="'fill'"  [subscriptSizing]="'dynamic'">
         <mat-label for="firstName" class="">Imię:</mat-label>
         <input
           formControlName="firstName"
