@@ -43,7 +43,6 @@ export const PermissionGuard: CanActivateFn | CanActivateChildFn = (
    .subscribe({
     next: res => {
       $userPermission.set(res?.role?.permissions || null);
-      console.log($userPermission());
     }
   })
 

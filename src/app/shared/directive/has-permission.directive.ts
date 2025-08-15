@@ -29,7 +29,6 @@ export class HasPermissionDirective implements OnInit, OnDestroy {
   private readonly _userService = inject(UserService);
   private readonly _destroyRef = inject(DestroyRef);
 
-  // readonly $userPermission = this._userService.$currentUserPermission
   $userPermission = signal<Permission[] | null>(null);
 
   private _hasView = false;
@@ -41,7 +40,6 @@ export class HasPermissionDirective implements OnInit, OnDestroy {
       ).subscribe({
       next: res => {
         this.$userPermission.set(res?.role?.permissions || null);
-        console.log(this.$userPermission());
       }
     })
 
