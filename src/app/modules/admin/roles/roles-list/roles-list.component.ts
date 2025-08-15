@@ -1,8 +1,8 @@
-import { Component, inject, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
 import { RoleService } from '@/app/core/role/role.service';
 import { Role } from '@/app/core/role/role.types';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { HasPermissionDirective } from '@/app/shared/directive/has-permission.directive';
@@ -13,14 +13,14 @@ import { HasPermissionDirective } from '@/app/shared/directive/has-permission.di
     MatIcon,
     MatIconButton,
     MatMenu,
-    MatMenuItem,
     MatMenuTrigger,
     RouterLink,
     MatButton,
     HasPermissionDirective,
   ],
   templateUrl: './roles-list.component.html',
-  styleUrl: './roles-list.component.scss'
+  styleUrl: './roles-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RolesListComponent {
   private readonly _roleService = inject(RoleService);
