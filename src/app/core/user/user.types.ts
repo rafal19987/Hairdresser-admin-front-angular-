@@ -15,3 +15,12 @@ export interface User {
   deletedAt?: Date,
   deleted: boolean,
 }
+
+export interface CreateUserPayload {
+  email: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+  active?: boolean;
+  role?: Role;
+}
