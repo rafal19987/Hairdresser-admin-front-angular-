@@ -18,20 +18,15 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
-        path: 'users-list',
+        path: 'users',
         loadChildren: () =>
-          import('./modules/admin/users/users.routes').then((m) => m.default)
-      },
-      {
-        path: 'users-add',
-        loadComponent: () =>
-          import('./modules/admin/users/users-add/users-add.component').then(
-            (m) => m.UsersAddComponent
-          ),
+          import('./modules/admin/users/users.routes').then((m) => m.default),
+        canActivate: [PermissionGuard],
+        data: { resource: 'users', action: 'read' }
       },
       {
         path: 'roles',
-        loadChildren: () => import('./modules/admin/roles/roles.routes').then(),
+        loadChildren: () => import('./modules/admin/roles/roles.routes').then((m) => m.default),
         canActivate: [PermissionGuard],
         data: { resource: 'roles', action: 'read' }
       },
