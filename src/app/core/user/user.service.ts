@@ -106,6 +106,27 @@ export class UserService {
     );
   }
 
+  public getUserListByRole(
+    page: number = 0,
+    limit: number = 10,
+    query: string = ''
+  ): Observable<CountedAndPaginatedList<User> | null> {
+    return this._httpClient.get<CountedAndPaginatedList<User> | null>(
+      environment.API_URL + `/api/users?page=${page + 1}&limit=${limit}&query=${query}`
+    )
+      .pipe(
+        take(1),
+        tap(res => {
+            if (res?.items)
+            {
+              this._users$.next(res.items);
+              this._pagination$.next(res.pagination);
+            }
+          }
+        )
+      );
+  }
+
   public create(payload: CreateUserPayload): Observable<ApiResponse> {
     return this._httpClient.post<ApiResponse>(environment.API_URL + '/api/users', {...payload})
       .pipe()

@@ -25,7 +25,6 @@ import {AuthService} from '@/app/core/auth/auth.service';
 export class DashboardComponent {
   isSidebarOpen = true;
   isUsersSubmenuOpen = false;
-  isRolesSubmenuOpen = false;
 
   private readonly _authService = inject(AuthService);
   private readonly _router = inject(Router);
@@ -36,10 +35,6 @@ export class DashboardComponent {
 
   toggleUsersSubmenu(): void {
     this.isUsersSubmenuOpen = !this.isUsersSubmenuOpen;
-  }
-
-  toggleRolesSubmenu(): void {
-    this.isRolesSubmenuOpen = !this.isRolesSubmenuOpen;
   }
 
   logout(): void {

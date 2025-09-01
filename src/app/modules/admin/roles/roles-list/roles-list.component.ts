@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/cor
 import { RoleService } from '@/app/core/role/role.service';
 import { Role } from '@/app/core/role/role.types';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { HasPermissionDirective } from '@/app/shared/directive/has-permission.directive';
@@ -17,6 +17,7 @@ import { HasPermissionDirective } from '@/app/shared/directive/has-permission.di
     RouterLink,
     MatButton,
     HasPermissionDirective,
+    MatMenuItem,
   ],
   templateUrl: './roles-list.component.html',
   styleUrl: './roles-list.component.scss',

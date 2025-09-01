@@ -29,10 +29,10 @@
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
-<!--                <button mat-menu-item (click)="showDetails(user)">-->
-<!--                  <mat-icon>info</mat-icon>-->
-<!--                  <span>Zobacz szczegóły</span>-->
-<!--                </button>-->
+                <a [routerLink]="['./', role.uuid]" mat-menu-item>
+                  <mat-icon>info</mat-icon>
+                  <span>Zobacz szczegóły</span>
+                </a>
 <!--                <button mat-menu-item (click)="confirmDelete(user)">-->
 <!--                  <mat-icon>delete</mat-icon>-->
 <!--                  <span>Usuń rolę</span>-->

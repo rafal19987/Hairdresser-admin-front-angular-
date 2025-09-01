@@ -1,1 +1,43 @@
-<p>role-view works!</p>
+<h1>{{ $role()?.displayName }}</h1>
+
+@if (!$rolePermissions()?.length) {
+  <p>Rola nie posiada przypisanych grup uprawnień</p>
+} @else {
+  @for (rolePermission of $rolePermissions(); track $index) {
+    <h2>Zasób: {{ rolePermission.resource }}</h2>
+
+    @if (rolePermission.actions.length) {
+      <ul>
+        @for (action of rolePermission.actions; track $index) {
+          <li>{{ action }}</li>
+        }
+      </ul>
+    } @else {
+      <p>Brak przypisanych akcji</p>
+    }
+  }
+
+  <div class="pt-12">
+    <h3>Użytkownicy: {{ $usersWithRole()?.length }}</h3>
+    @if (isUserListLoading() && !isUserListLoaded()) {
+      <p>Ładowanie...</p>
+    } @else {
+      @if ($usersWithRole()?.length) {
+        <ul>
+          @for (user of $usersWithRole(); track $index) {
+            <li>
+              <a [routerLink]="['../../', 'users', user.uuid]"
+                 class="underline hover:text-blue-800"
+              >
+                {{ user.username }}
+              </a>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p>Brak użytkowników z podaną rolą</p>
+      }
+    }
+  </div>
+}
+

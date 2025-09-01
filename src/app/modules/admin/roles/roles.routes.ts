@@ -62,15 +62,43 @@ const roleResolver = (
       }
     }),
     catchError((error: HttpErrorResponse) => {
-      console.error(error);
+      console.error(error.error);
+      const errorMessage = error.error?.message || null;
+      const status = error.error?.statusCode || null;
+
+      if (status === 404) {
+        if (errorMessage) {
+          snack.open(errorMessage, status.toString(), {
+            duration: 3000,
+            verticalPosition: 'top',
+            horizontalPosition: 'right'
+          })
+        } else {
+          snack.open('Nie znalezniono', status.toString(), {
+            duration: 3000,
+            verticalPosition: 'top',
+            horizontalPosition: 'right'
+          })
+        }
+      }
+
+      if (status === 403) {
+        if (errorMessage) {
+          snack.open(errorMessage, status.toString(), {
+            duration: 3000,
+            verticalPosition: 'top',
+            horizontalPosition: 'right'
+          })
+        } else {
+          snack.open('Brak uprawnień', status.toString(), {
+            duration: 3000,
+            verticalPosition: 'top',
+            horizontalPosition: 'right'
+          })
+        }
+      }
 
       const parentUrl = state.url.split('/').slice(0, -1).join('/');
-
-      snack.open('Brak uprawnień', error?.status.toString(), {
-        duration: 3000,
-        verticalPosition: 'top',
-        horizontalPosition: 'right'
-      })
 
       router.navigateByUrl(parentUrl);
 
