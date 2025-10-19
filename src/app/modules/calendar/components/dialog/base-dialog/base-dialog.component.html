@@ -1,0 +1,28 @@
+<div class="flex flex-col flex-auto justify-center items-center min-w-full gap-4">
+  <div class="w-full text-center flex flex-col">
+    <span class="text-black dark:text-white font-medium text-3xl">{{ title() }}</span>
+    <span class="w-3/4 mx-auto">{{ description() }}</span>
+  </div>
+  <div class="test w-full text-center flex flex-col">
+    <div class="flex flex-col w-full gap-4">
+      <ng-content></ng-content>
+    </div>
+  </div>
+  <div class="flex gap-2">
+    <button
+    mat-flat-button
+    (click)="closeSelf()"
+    >
+      Zamknij
+    </button>
+
+    @if (actionFn()) {
+      <button
+        mat-flat-button
+        (click)="executeAction()"
+      >
+      {{ actionLabel() }}
+      </button>
+    }
+  </div>
+</div>

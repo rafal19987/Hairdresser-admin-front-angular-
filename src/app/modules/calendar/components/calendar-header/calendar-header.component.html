@@ -1,0 +1,48 @@
+<div class="flex justify-between items-center px-4 py-6">
+  <div class="flex items-center gap-2">
+    <button mat-button (click)="goToToday()">
+      Dziś
+    </button>
+
+    <button mat-icon-button (click)="navigatePrevious()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <h2 class="text-xl font-semibold text-green-900 capitalize">{{ formattedDate() }}</h2>
+
+    <button mat-icon-button (click)="navigateNext()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  <div class="header-right">
+    <button
+      mat-button
+      [class.active]="currentView() === 'month'"
+      (click)="viewChange.emit('month')"
+    >
+      Miesiąc
+    </button>
+    <button
+      mat-button
+      [class.active]="currentView() === 'week'"
+      (click)="viewChange.emit('week')"
+    >
+      Tydzień
+    </button>
+    <button
+      mat-button
+      [class.active]="currentView() === 'day'"
+      (click)="viewChange.emit('day')"
+    >
+      Dzień
+    </button>
+    <button
+      mat-button
+      [class.active]="currentView() === 'schedule'"
+      (click)="viewChange.emit('schedule')"
+    >
+      Harmonogram
+    </button>
+  </div>
+</div>

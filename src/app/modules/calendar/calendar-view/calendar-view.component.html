@@ -1,0 +1,76 @@
+<div class="flex flex-col min-h-screen p-5">
+  <div class="mb-5">
+    <h2>Kalendarz</h2>
+    <p>Current view: {{ calendarState.currentView() }}</p>
+    <p>Date: {{ calendarState.currentDate() | date:'fullDate' }}</p>
+
+    <button
+    mat-flat-button
+    (click)="openCreateCalendarDialog()"
+    >Dodaj kalendarz</button>
+
+
+    @if (myCalendars()?.length) {
+      <ul>
+        <span>Moje kalendarze:</span>
+        @for (calendar of myCalendars(); track calendar.uuid) {
+          <li>
+            <mat-checkbox>{{ calendar.name }}</mat-checkbox>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <!-- Temporary: Show events count -->
+  <div class="flex-1 mt-4">
+    <app-calendar-header
+      [currentDate]="calendarState.currentDate()"
+      [currentView]="calendarState.currentView()"
+      (viewChange)="calendarState.setView($event)"
+      (dateChange)="handleDateChange($event)"
+    />
+
+    @switch (calendarState.currentView()) {
+      @case ('month') {
+        <app-calendar-month-view
+          [date]="calendarState.currentDate()"
+          [events]="calendarState.filteredEvents()"
+          (eventClick)="handleEventClick($event)"
+        />
+      }
+      @case ('week') {
+        <app-calendar-week-view
+          [date]="calendarState.currentDate()"
+          [events]="calendarState.filteredEvents()"
+          (eventClick)="handleEventClick($event)"
+          (eventDrop)="handleEventDrop($event)"
+        />
+      }
+      @case ('day') {
+        <app-calendar-day-view
+          [date]="calendarState.currentDate()"
+          [events]="calendarState.filteredEvents()"
+          (eventClick)="handleEventClick($event)"
+          (eventDrop)="handleEventDrop($event)"
+        />
+      }
+      @case ('schedule') {
+        <app-calendar-schedule-view
+          [date]="calendarState.currentDate()"
+          [events]="calendarState.filteredEvents()"
+          (eventClick)="handleEventClick($event)"
+        />
+      }
+    }
+
+
+    @if (calendarState.loading()) {
+      <p>Ładowanie...</p>
+    } @else if (calendarState.error()) {
+      <p class="text-red-600 text-sm">{{ calendarState.error() }}</p>
+    } @else {
+      <p>Liczba wydarzeń: {{ calendarState.filteredEvents().length }}</p>
+    }
+  </div>
+</div>

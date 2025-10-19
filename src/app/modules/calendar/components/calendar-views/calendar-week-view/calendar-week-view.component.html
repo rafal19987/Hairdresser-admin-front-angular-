@@ -1,0 +1,104 @@
+<div class="flex flex-col h-full bg-white rounded-lg overflow-hidden">
+
+  <!-- Week header with days -->
+  <div class="grid grid-cols-[60px_repeat(7,1fr)] border-b-2 border-gray-200 sticky top-0 bg-white z-10">
+    <!-- Time gutter spacer -->
+    <div class="border-r border-gray-200"></div>
+
+    <!-- Day headers -->
+    @for (day of weekDays(); track trackByDate($index, day)) {
+      <div
+        class="p-4 text-center border-l border-gray-200"
+        [class.bg-amber-50]="day.isToday"
+      >
+        <div class="text-xs font-medium text-gray-600 uppercase">
+          {{ day.name }}
+        </div>
+        <div
+          class="text-2xl font-semibold mt-1"
+          [class.bg-amber-500]="day.isToday"
+          [class.text-white]="day.isToday"
+          [class.rounded-full]="day.isToday"
+          [class.w-10]="day.isToday"
+          [class.h-10]="day.isToday"
+          [class.flex]="day.isToday"
+          [class.items-center]="day.isToday"
+          [class.justify-center]="day.isToday"
+          [class.mx-auto]="day.isToday"
+        >
+          {{ day.number }}
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Week grid (time slots + days) -->
+  <div class="flex-1 overflow-auto">
+    <div class="grid grid-cols-[60px_repeat(7,1fr)] relative">
+
+      <!-- Time labels column -->
+      <div class="border-r border-gray-200">
+        @for (slot of timeSlots(); track trackBySlot($index, slot)) {
+          <div class="h-[60px] px-2 py-1 text-xs text-gray-500 text-right border-t border-gray-100">
+            {{ slot }}
+          </div>
+        }
+      </div>
+
+      <!-- Day columns -->
+      @for (day of weekDays(); track trackByDate($index, day)) {
+        <div
+          class="relative border-l border-gray-200"
+          cdkDropList
+          [cdkDropListData]="day.date"
+          (cdkDropListDropped)="onEventDrop($event, day.date)"
+        >
+          <!-- Hour lines (background grid) -->
+          @for (slot of timeSlots(); track trackBySlot($index, slot)) {
+            <div class="h-[60px] border-t border-gray-100"></div>
+          }
+
+          <!-- Events overlay -->
+          <div class="absolute inset-0 pointer-events-none">
+            @for (evt of getEventsForDay(day.date); track trackByEvent($index, evt)) {
+              <div
+                class="absolute pointer-events-auto cursor-pointer rounded shadow-sm border border-white/20 overflow-hidden transition-all hover:shadow-md hover:z-20"
+                [ngStyle]="{
+                  top: evt.style.top,
+                  height: evt.style.height,
+                  left: evt.style.left,
+                  width: evt.style.width,
+                  zIndex: evt.style.zIndex,
+                  background: evt.event.color
+                }"
+                cdkDrag
+                [cdkDragData]="evt.event"
+                (click)="eventClick.emit(evt.event)"
+              >
+                <div class="p-1 text-white">
+                  <div class="text-xs font-semibold truncate">
+                    {{ evt.event.title }}
+                  </div>
+                  <div class="text-[10px] opacity-90">
+                    {{ evt.event.scheduleAt | date:'HH:mm' }}
+                  </div>
+                </div>
+
+                <!-- Drag preview -->
+                <div
+                  *cdkDragPreview
+                  class="p-2 rounded shadow-lg opacity-90"
+                  [style.background]="evt.event.color"
+                >
+                  <div class="text-xs font-semibold text-white">
+                    {{ evt.event.title }}
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

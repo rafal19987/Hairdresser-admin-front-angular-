@@ -1,0 +1,160 @@
+<div class="flex flex-col h-full bg-white">
+
+  @if (groupedEvents().length === 0) {
+    <!-- Empty state -->
+    <div class="flex flex-col items-center justify-center h-full text-gray-400 p-8">
+      <mat-icon class="text-6xl mb-4">event_busy</mat-icon>
+      <p class="text-lg font-medium">Brak wydarzeń</p>
+      <p class="text-sm">Dodaj nowe wydarzenie, aby je zobaczyć tutaj</p>
+    </div>
+  } @else {
+    <!-- Schedule list -->
+    <div class="flex-1 overflow-auto">
+      @for (group of groupedEvents(); track trackByDate($index, group)) {
+        <div class="border-b border-gray-100 last:border-b-0">
+
+          <!-- Events for this day -->
+          @for (event of group.events; track trackByEvent($index, event); let isFirst = $first) {
+            <div class="grid grid-cols-[100px_80px_1fr] hover:bg-gray-50 transition-colors">
+
+              <!-- Date column (only show on first event of the day) -->
+              @if (isFirst) {
+                <div
+                  class="border-r border-gray-200 p-4 text-center"
+                  [attr.rowspan]="group.events.length"
+                  [class.bg-blue-50]="group.isToday"
+                >
+                  <!-- Day number -->
+                  <div
+                    class="text-3xl font-semibold mb-1"
+                    [class.text-blue-600]="group.isToday"
+                    [class.text-gray-900]="!group.isToday"
+                  >
+                    {{ group.dayNumber }}
+                  </div>
+
+                  <!-- Day name -->
+                  <div
+                    class="text-xs font-medium uppercase tracking-wide"
+                    [class.text-blue-600]="group.isToday"
+                    [class.text-gray-500]="!group.isToday"
+                  >
+                    {{ group.dayName }}
+                  </div>
+
+                  <!-- Month (small) -->
+                  <div class="text-xs text-gray-400 mt-1 capitalize">
+                    {{ group.monthName }}
+                  </div>
+                </div>
+              } @else {
+                <!-- Empty cell for subsequent events -->
+                <div class="border-r border-gray-200"></div>
+              }
+
+              <!-- Time column -->
+              <div class="border-r border-gray-200 p-4 text-sm text-gray-600">
+                <div class="font-medium">
+                  {{ formatTime(event.scheduleAt) }}
+                </div>
+                <div class="text-xs text-gray-400">
+                  {{ formatTime(event.scheduleEndAt) }}
+                </div>
+              </div>
+
+              <!-- Event details column -->
+              <div
+                class="p-4 cursor-pointer flex items-center gap-3"
+                (click)="eventClick.emit(event)"
+              >
+                <!-- Color indicator -->
+                <div
+                  class="w-1 h-12 rounded-full flex-shrink-0"
+                  [style.background]="event.color"
+                ></div>
+
+                <!-- Event info -->
+                <div class="flex-1 min-w-0">
+                  <!-- Event bar -->
+                  <div
+                    class="px-3 py-2 rounded-lg shadow-sm border-l-4 hover:shadow-md transition-shadow"
+                    [style.borderLeftColor]="event.color"
+                    [style.backgroundColor]="event.color + '15'"
+                  >
+                    <div class="flex items-start gap-2">
+                      <!-- Icon -->
+                      <mat-icon
+                        class="text-lg flex-shrink-0 mt-0.5"
+                        [style.color]="event.color"
+                      >
+                        {{ getEventIcon(event.type) }}
+                      </mat-icon>
+
+                      <!-- Content -->
+                      <div class="flex-1 min-w-0">
+                        <!-- Title -->
+                        <div
+                          class="font-semibold text-sm mb-1"
+                          [style.color]="event.color"
+                        >
+                          {{ event.title }}
+                        </div>
+
+                        <!-- Location / Meeting type -->
+                        @if (event.location || event.meetingType) {
+                          <div class="text-xs text-gray-600 flex items-center gap-1">
+                            <mat-icon class="text-sm">
+                              @switch (event.meetingType) {
+                                @case ('video') { videocam }
+                                @case ('phone') { phone }
+                                @case ('stationary') { place }
+                                @default { location_on }
+                              }
+                            </mat-icon>
+                            <span>
+                              @if (event.location) {
+                                {{ event.location }}
+                              } @else if (event.meetingType) {
+                                @switch (event.meetingType) {
+                                  @case ('video') { Wideokonferencja }
+                                  @case ('phone') { Rozmowa telefoniczna }
+                                  @case ('stationary') { Spotkanie stacjonarne }
+                                }
+                              }
+                            </span>
+                          </div>
+                        }
+
+                        <!-- Meeting link -->
+                        @if (event.meetingLink) {
+                          <div class="mt-1">
+                            <a
+                              [href]="event.meetingLink"
+                              target="_blank"
+                              class="text-xs text-blue-600 hover:underline flex items-center gap-1"
+                              (click)="$event.stopPropagation()"
+                            >
+                              <mat-icon class="text-sm">link</mat-icon>
+                              Dołącz
+                            </a>
+                          </div>
+                        }
+
+                        <!-- Notes preview (if exists) -->
+                        @if (event.notes) {
+                          <div class="text-xs text-gray-500 mt-1 line-clamp-1">
+                            {{ event.notes }}
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,48 @@
+<app-base-dialog
+  [title]="'Dodaj kalendarz'"
+  [description]="'Podaj nazwę nowego kalendarza, który chcesz utworzyć'"
+  [actionLabel]="'Dodaj'"
+  [actionFn]="save.bind(this)"
+>
+  @if (form) {
+    <form [formGroup]="form">
+      <!-- Nazwa kalendarza -->
+      <mat-form-field class="fuse-mat-dense flex-auto w-full" [floatLabel]="'always'">
+        <mat-label class="text-md sm:text-base">Nazwa</mat-label>
+        <input
+          matInput
+          class="text-md sm:text-base"
+          [id]="'name'"
+          [name]="'name'"
+          [formControl]="getFormField('name', form)"
+          [placeholder]="'Nazwa'"
+          [type]="'text'"
+        />
+        @if (form.get('name')!.hasError('required')) {
+          <mat-error class="text-xs">To
+            pole jest wymagane
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Kolor kalendarza -->
+      <mat-form-field class="fuse-mat-dense flex-auto w-full" [floatLabel]="'always'">
+        <mat-label class="text-md sm:text-base">Kolor</mat-label>
+        <input
+          matInput
+          class="text-md sm:text-base"
+          [id]="'color'"
+          [name]="'color'"
+          [formControl]="getFormField('color', form)"
+          [placeholder]="'Kolor'"
+          [type]="'text'"
+        />
+        @if (form.get('color')!.hasError('required')) {
+          <mat-error class="text-xs" >To
+            pole jest wymagane
+          </mat-error>
+        }
+      </mat-form-field>
+    </form>
+  }
+</app-base-dialog>

@@ -30,6 +30,10 @@ export const routes: Routes = [
         canActivate: [PermissionGuard],
         data: { resource: 'roles', action: 'read' }
       },
+      {
+        path: 'calendar',
+        loadChildren: () => import('./modules/calendar/calendar.routes').then((m) => m.default),
+      }
       // {
       //   path: '404-not-found',
       //   pathMatch: 'full',
