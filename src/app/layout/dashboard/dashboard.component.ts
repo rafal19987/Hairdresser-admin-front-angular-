@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { RouterModule } from '@angular/router';
-import { AuthService } from '../../auth/auth.service';
-import { NgIf } from '@angular/common';
+import {Router, RouterModule} from '@angular/router';
+import {catchError} from 'rxjs/operators';
+import {EMPTY} from 'rxjs';
+import {AuthService} from '@/app/core/auth/auth.service';
 
 @Component({
   selector: 'dashboard-layout',
@@ -18,15 +19,15 @@ import { NgIf } from '@angular/common';
     MatListModule,
     MatIconModule,
     MatButtonModule,
-    RouterModule,
-    NgIf,
-  ],
+    RouterModule
+],
 })
 export class DashboardComponent {
   isSidebarOpen = true;
   isUsersSubmenuOpen = false;
 
-  constructor(private authService: AuthService) {}
+  private readonly _authService = inject(AuthService);
+  private readonly _router = inject(Router);
 
   toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
@@ -37,6 +38,18 @@ export class DashboardComponent {
   }
 
   logout(): void {
-    this.authService.logout();
+    const payload = {
+      refreshToken: localStorage.getItem('refreshToken')!,
+      accessToken: localStorage.getItem('accessToken')!,
+    }
+
+   this._authService.logout(payload).pipe(
+     catchError((err) => {
+       console.error(err)
+       return EMPTY;
+     })
+   ).subscribe({next: (res) => {
+     this._router.navigate(['/login']);
+     }})
   }
 }

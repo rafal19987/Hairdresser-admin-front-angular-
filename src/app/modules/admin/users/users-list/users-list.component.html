@@ -1,0 +1,73 @@
+<div class="flex flex-col gap-4 p-4">
+  <a
+    class="self-end"
+    *hasPermission="{resource: 'users', action: 'create'}"
+    mat-flat-button
+    [routerLink]="'./add'"
+  >Dodaj użytkownika</a>
+
+  <div class="mb-4 flex gap-4 items-center justify-between">
+    <h2 class="text-xl font-semibold whitespace-nowrap">Lista użytkowników: {{ totalItems() }}</h2>
+
+    <input
+      class="border px-4 py-2 w-full max-w-xl"
+      type="text"
+      placeholder="Wyszukaj użytkownika..."
+      (input)="onSearchChange($event)"
+    />
+  </div>
+
+  <table
+    class="table-auto w-full border-collapse border border-gray-200"
+  >
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="border border-gray-200 px-4 py-2 text-left">Imię i nazwisko</th>
+        <th class="border border-gray-200 px-4 py-2 text-left">Email</th>
+        <th class="border border-gray-200 px-4 py-2 text-left">Rola</th>
+        <th class="border border-gray-200 px-4 py-2 text-left">Akcje</th>
+      </tr>
+    </thead>
+    <tbody>
+        @if (users()?.length) {
+          @for (user of users(); track user.uuid)
+          {
+            <tr class="even:bg-slate-100">
+            <td class="border border-gray-200 px-4 py-2">{{ user.firstName || ''}} {{  user.lastName || '' }}</td>
+            <td class="border border-gray-200 px-4 py-2">{{ user.email }}</td>
+            <td class="border border-gray-200 px-4 py-2">{{ user?.role ? user?.role?.displayName : 'Brak' }}</td>
+            <td class="border border-gray-200 px-4 py-2 text-center">
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="showDetails(user)">
+                  <mat-icon>info</mat-icon>
+                  <span>Zobacz szczegóły</span>
+                </button>
+                            <button mat-menu-item (click)="confirmDelete(user)">
+                              <mat-icon>delete</mat-icon>
+                              <span>Usuń użytkownika</span>
+                            </button>
+              </mat-menu>
+            </td>
+            </tr>
+          }
+        } @else {
+          <td class="border border-gray-200 px-4 py-2">Brak użytkowników do wyświetlenia</td>
+        }
+    </tbody>
+  </table>
+
+  @if (users()?.length && pagination()) {
+    <mat-paginator
+      [length]="totalItems()"
+      [pageSize]="itemsPerPage()"
+      [pageIndex]="currentPage() - 1"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      (page)="handlePageEvent($event)"
+      [disabled]="false"
+      >
+    </mat-paginator>
+  }
+</div>

@@ -1,0 +1,57 @@
+<div class="relative w-full h-full flex bg-black md:items-center md:justify-center">
+  <div class="grid grid-cols-1 md:grid-cols-2 w-full h-full max-h-vh max-w-vw  2xl:max-w-[1440px]">
+    <div class="relative w-full h-dvh overflow-hidden md:flex md:items-center md:justify-center">
+      <h1 class="absolute md:hidden top-4 left-4 text-white font-black text-4xl z-10">Rêve</h1>
+      <img class="absolute md:rounded-lg w-auto h-full max-h-dvh object-cover" src="/images/login-image.jpg" alt="zdjecie prezentujące fryzjerkę"/>
+    </div>
+    <div class="absolute md:static bottom-0 rounded-t-lg md:rounded-t-none md:bottom-auto w-full h-[60vh] md:h-dvh bg-black bg-opacity-80 md:bg-transparent flex items-center md:justify-center flex-col p-4">
+      <div class="flex flex-col w-full max-w-xl pt-14 pb-4">
+        <h1 class="hidden  md:block text-white font-black text-4xl">Rêve</h1>
+        <span class="inline-block w-full text-start text-white text-base">Zaloguj się i zarządzaj wszystkim w jednym miejscu.</span>
+      </div>
+      <form class="flex flex-col gap-4 max-w-xl w-full" [formGroup]="loginForm">
+        <mat-form-field
+        >
+          <mat-label>Login:</mat-label>
+          <input
+            matInput
+            id="username"
+            type="text"
+            [formControlName]="'username'"
+          />
+          @if (loginForm.get('username')?.hasError('required') && loginForm.get('username')?.touched) {
+            <mat-error>To pole jest wymagane</mat-error>
+          }
+          @if (loginForm.get('username')?.hasError('email') && loginForm.get('username')?.touched) {
+            <mat-error>Podaj poprawny adres e-mail</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field
+        >
+          <mat-label>Hasło:</mat-label>
+          <input
+            matInput
+            id="password"
+            type="password"
+            [formControlName]="'password'"
+          />
+          @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
+            <mat-error>To pole jest wymagane</mat-error>
+          }
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          [disabled]="loginForm.disabled || loginForm.invalid"
+          (click)="login($event)" type="submit">
+          @if (loginForm.disabled) {
+            <mat-progress-spinner />
+          } @else {
+            <span>Zaloguj</span>
+          }
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,103 @@
+@if (createUserForm) {
+  <form
+    class="w-full h-full flex flex-col gap-1"
+    [formGroup]="createUserForm"
+  >
+    <div class="w-full">
+      <mat-form-field
+        [class]="'flex-auto w-full'"
+        [appearance]="'fill'"
+        [floatLabel]="'always'" >
+        <mat-label>Imię</mat-label>
+        <input
+          matInput
+          [formControl]="getFormField('firstName', createUserForm)"
+          [id]="'firstName'"
+          [placeholder]="'Imię'"
+        />
+        @if (getFormField('firstName', createUserForm).invalid) {
+          <mat-error class="text-xs">
+            {{ getErrorMessage("firstName") }}
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field
+        [class]="'flex-auto w-full'"
+        [appearance]="'fill'"
+        [floatLabel]="'always'" >
+        <mat-label>Nazwisko</mat-label>
+        <input
+          matInput
+          [formControl]="getFormField('lastName', createUserForm)"
+          [id]="'firstName'"
+          [placeholder]="'Nazwisko'"
+        />
+        @if (getFormField('lastName', createUserForm).invalid) {
+          <mat-error>
+            {{ getErrorMessage("lastName") }}
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field
+        [class]="'flex-auto w-full'"
+        [appearance]="'fill'"
+        [floatLabel]="'always'" >
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          [formControl]="getFormField('email', createUserForm)"
+          [id]="'firstName'"
+          [placeholder]="'adres email'"
+        />
+        @if (getFormField('email', createUserForm).invalid) {
+          <mat-error>
+            {{ getErrorMessage("email") }}
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field
+        [class]="'flex-auto w-full'"
+        [appearance]="'fill'"
+        [floatLabel]="'always'" >
+        <mat-label>Hasło</mat-label>
+        <input
+          matInput
+          [formControl]="getFormField('password', createUserForm)"
+          [id]="'password'"
+          [placeholder]="'Hasło'"
+        />
+        @if (getFormField('password', createUserForm).invalid) {
+          <mat-error>
+            {{ getErrorMessage("password") }}
+          </mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    @if (roles() && roles()?.length) {
+      <mat-form-field
+        [class]="'w-full'"
+        [appearance]="'fill'"
+        [floatLabel]="'always'"
+      >
+        <mat-label>Wybierz rolę</mat-label>
+        <mat-select [placeholder]="'Wbierz rolę'" [formControl]="getFormField('role', createUserForm)">
+          @for(role of roles(); track $index) {
+            <mat-option [value]="role.uuid">{{ role.displayName }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+
+
+    <button
+      class="mt-4"
+      mat-flat-button
+      [type]="'submit'"
+      (click)="sendForm($event)"
+    >Dodaj użytkownika</button>
+  </form>
+}

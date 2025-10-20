@@ -1,0 +1,129 @@
+<div class="flex flex-col h-full bg-white rounded-lg overflow-hidden">
+
+  <!-- Day header -->
+  <div class="border-b-2 border-gray-200 sticky top-0 bg-white z-10">
+    <div
+      class="p-6 text-center"
+      [class.bg-amber-50]="dayInfo().isToday"
+    >
+      <!-- Day name -->
+      <div class="text-sm font-medium text-gray-600 uppercase tracking-wide">
+        {{ dayInfo().dayName }}
+      </div>
+
+      <!-- Day number (large) -->
+      <div class="mt-2 flex items-center justify-center">
+        <div
+          class="text-5xl font-bold"
+          [class.bg-amber-500]="dayInfo().isToday"
+          [class.text-white]="dayInfo().isToday"
+          [class.rounded-full]="dayInfo().isToday"
+          [class.w-20]="dayInfo().isToday"
+          [class.h-20]="dayInfo().isToday"
+          [class.flex]="dayInfo().isToday"
+          [class.items-center]="dayInfo().isToday"
+          [class.justify-center]="dayInfo().isToday"
+        >
+          {{ dayInfo().dayNumber }}
+        </div>
+      </div>
+
+      <!-- Month and year -->
+      <div class="mt-2 text-sm text-gray-500 capitalize">
+        {{ dayInfo().monthYear }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Day grid (time slots + events) -->
+  <div class="flex-1 overflow-auto">
+    <div class="grid grid-cols-[80px_1fr] relative">
+
+      <!-- Time labels column -->
+      <div class="border-r border-gray-200 bg-gray-50">
+        @for (slot of timeSlots(); track trackBySlot($index, slot)) {
+          <div class="h-[60px] px-3 py-1 text-sm font-medium text-gray-600 text-right border-t border-gray-100">
+            {{ slot }}
+          </div>
+        }
+      </div>
+
+      <!-- Events column -->
+      <div
+        class="relative bg-white"
+        cdkDropList
+        [cdkDropListData]="date()"
+        (cdkDropListDropped)="onEventDrop($event)"
+      >
+        <!-- Hour lines (background grid) -->
+        @for (slot of timeSlots(); track trackBySlot($index, slot); let i = $index) {
+          <div
+            class="h-[60px] border-t border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+            (click)="onTimeSlotClick(i)"
+          ></div>
+        }
+
+        <!-- Current time indicator (red line) -->
+        @if (dayInfo().isToday) {
+          <div
+            class="absolute left-0 right-0 h-0.5 bg-red-500 z-20 pointer-events-none"
+            [style.top]="getCurrentTimePosition()"
+          >
+            <div class="absolute -left-2 -top-1.5 w-3 h-3 bg-red-500 rounded-full"></div>
+          </div>
+        }
+
+        <!-- Events overlay -->
+        <div class="absolute inset-0 px-2 pointer-events-none">
+          @for (evt of positionedEvents(); track trackByEvent($index, evt)) {
+            <div
+              class="absolute pointer-events-auto cursor-pointer rounded-lg shadow-md border border-white/30 overflow-hidden transition-all hover:shadow-xl hover:z-20"
+              [ngStyle]="{
+                top: evt.style.top,
+                height: evt.style.height,
+                left: evt.style.left,
+                width: evt.style.width,
+                zIndex: evt.style.zIndex,
+                background: evt.event.color
+              }"
+              cdkDrag
+              [cdkDragData]="evt.event"
+              (click)="eventClick.emit(evt.event)"
+            >
+              <!-- Event content -->
+              <div class="p-3 text-white h-full flex flex-col">
+                <div class="font-semibold text-sm mb-1">
+                  {{ evt.event.title }}
+                </div>
+                <div class="text-xs opacity-90 mb-2">
+                  {{ evt.event.scheduleAt | date:'HH:mm' }} - {{ evt.event.scheduleEndAt | date:'HH:mm' }}
+                </div>
+
+                <!-- Event details (if height allows) -->
+                @if (evt.event.location) {
+                  <div class="text-xs opacity-80 mt-auto">
+                    📍 {{ evt.event.location }}
+                  </div>
+                }
+              </div>
+
+              <!-- Drag preview -->
+              <div
+                *cdkDragPreview
+                class="p-3 rounded-lg shadow-2xl opacity-95 min-w-[200px]"
+                [style.background]="evt.event.color"
+              >
+                <div class="font-semibold text-sm text-white mb-1">
+                  {{ evt.event.title }}
+                </div>
+                <div class="text-xs text-white/90">
+                  {{ evt.event.scheduleAt | date:'HH:mm' }}
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

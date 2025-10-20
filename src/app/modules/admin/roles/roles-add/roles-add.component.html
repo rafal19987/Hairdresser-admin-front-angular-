@@ -1,0 +1,114 @@
+@if (roleForm) {
+  <form class="w-full h-full flex flex-col gap-1" [formGroup]="roleForm">
+    <div class="w-full">
+      <mat-form-field
+        [class]="'flex-auto w-full'"
+        [appearance]="'fill'"
+        [floatLabel]="'always'">
+        <mat-label>Name</mat-label>
+        <input
+          matInput
+          [id]="'name'"
+          [formControl]="getFormField('name', roleForm)"
+          [placeholder]="'Nazwa'"
+        />
+        @if (getFormField('name', roleForm).hasError('required')) {
+          <mat-error class="text-xs">
+            To
+            pole jest wymagane
+          </mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="w-full">
+      <mat-form-field
+        [class]="'flex-auto w-full'"
+        [appearance]="'fill'"
+        [floatLabel]="'always'">
+        <mat-label>Display Name</mat-label>
+        <input
+          matInput
+          [id]="'displayName'"
+          [formControl]="getFormField('displayName', roleForm)"
+          [placeholder]="'Widoczna nazwa'"
+        />
+        @if (getFormField('displayName', roleForm).hasError('required')) {
+          <mat-error class="text-xs">
+            To
+            pole jest wymagane
+          </mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="permissions-section bg-white p-6 rounded-lg shadow-sm border">
+      <h3 class="text-xl font-semibold mb-4 text-gray-800">Uprawnienia do zasobów</h3>
+      <p class="text-sm text-gray-600 mb-6">
+        Wybierz uprawnienia dla każdego zasobu.
+        <strong>"All"</strong> oznacza wszystkie podstawowe operacje (CRUD),
+        <strong>"Admin"</strong> oznacza wszystkie operacje + uprawnienia administracyjne.
+      </p>
+
+      <div formArrayName="permissions" class="permissions-grid space-y-6">
+        @for (permissionGroup of permissionsFormArray.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="permission-card border rounded-lg p-5 bg-gray-50 hover:bg-gray-100 transition-colors">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="font-semibold text-lg capitalize text-gray-700">
+                🔒 {{ getResourceName(i) }}
+              </h4>
+
+              <div class="text-sm text-blue-600 font-medium">
+                @if (hasAnyPermissions(i)) {
+                  <span class="bg-blue-100 px-2 py-1 rounded">
+                      {{ _getSelectedActionsPreview(i) }}
+                    </span>
+                } @else {
+                  <span class="text-gray-400">Brak uprawnień</span>
+                }
+              </div>
+            </div>
+
+            <input type="hidden" formControlName="resource">
+
+            <div formArrayName="actions" class="actions-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              @for (actionControl of getActionsFormArray(i).controls; track $index; let j = $index) {
+                <div class="action-item">
+                  <mat-checkbox
+                    [formControlName]="j"
+                    (change)="onActionChange(i, j)"
+                    class="action-checkbox w-full"
+                  >
+                    <div class="flex flex-col">
+                      <span class="capitalize font-medium">{{ getActionName(j) }}</span>
+                      <span class="text-xs text-gray-500">
+                          {{ _getActionDescription(getActionName(j)) }}
+                        </span>
+                    </div>
+                  </mat-checkbox>
+                </div>
+              }
+            </div>
+
+            @if (hasAnyPermissions(i)) {
+              <div class="mt-4 p-3 bg-blue-50 rounded border-l-4 border-blue-200">
+                <p class="text-sm font-medium text-blue-800 mb-1">Przypisane akcje:</p>
+                <div class="text-sm text-blue-700">
+                  {{ _getActualPermissions(i).join(', ') }}
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+
+    <button
+      class="mt-4"
+      mat-flat-button
+      [type]="'submit'"
+      (click)="sendForm($event)"
+    >Dodaj rolę</button>
+  </form>
+}

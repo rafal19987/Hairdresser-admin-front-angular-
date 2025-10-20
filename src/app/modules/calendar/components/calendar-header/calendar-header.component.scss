@@ -1,0 +1,8 @@
+.header-right {
+  display: flex;
+  gap: 4px;
+}
+
+.header-right button.active {
+  background: #f3f4f6;
+}

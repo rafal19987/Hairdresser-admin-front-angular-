@@ -1,0 +1,60 @@
+<!-- calendar-month-view.component.html -->
+
+<div class="flex flex-col h-full rounded-lg overflow-hidden">
+
+  <!-- Day headers -->
+  <div class="grid grid-cols-7 h-16">
+    @for (day of dayNames; track day) {
+      <div class="p-3 text-center font-medium text-gray-700 text-xs">
+        {{ day }}
+      </div>
+    }
+  </div>
+
+  <!-- Calendar grid -->
+  <div class="grid grid-cols-7 auto-rows-fr flex-1 gap-px bg-gray-200">
+    @for (day of calendarDays(); track day.date) {
+      <div
+        class="bg-lighter p-2 cursor-pointer overflow-hidden min-h-[100px] hover:bg-darker/50 transition-colors"
+        [class.bg-gray-50]="!day.isCurrentMonth"
+        [class.text-gray-400]="!day.isCurrentMonth"
+        [class.!bg-amber-100]="day.isToday"
+        (click)="dateClick.emit(day.date)"
+      >
+        <!-- Day number -->
+        <div
+          class="text-sm font-medium mb-1 text-center"
+          [class.bg-amber-500]="day.isToday"
+          [class.text-white]="day.isToday"
+          [class.rounded-full]="day.isToday"
+          [class.w-7]="day.isToday"
+          [class.h-7]="day.isToday"
+          [class.flex]="day.isToday"
+          [class.items-center]="day.isToday"
+          [class.justify-center]="day.isToday"
+          [class.font-semibold]="day.isToday"
+        >
+          {{ getDate(day.date) }}
+        </div>
+
+        <!-- Event indicators -->
+        <div class="flex flex-col gap-0.5 mt-1">
+          @for (event of day.events.slice(0, 3); track event.id) {
+            <div
+              class="text-xs px-1.5 py-0.5 rounded text-white whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer hover:brightness-90 transition-all"
+              [style.background]="event.color"
+              (click)="onEventClick($event, event)"
+            >
+              {{ event.title }}
+            </div>
+          }
+          @if (day.events.length > 3) {
+            <div class="text-xs text-gray-500 px-1.5 py-0.5 italic">
+              +{{ day.events.length - 3 }} więcej
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>
