@@ -6,5 +6,8 @@
   <p><strong>Rola:</strong> {{ data.role }}</p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
+  <button mat-button
+          [type]="'submit'"
+          (click)="sendForm($event)">Deaktywuj</button>
   <button mat-button mat-dialog-close>Zamknij</button>
 </mat-dialog-actions>
