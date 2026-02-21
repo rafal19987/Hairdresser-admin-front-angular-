@@ -58,23 +58,6 @@
         }
       </mat-form-field>
 
-      <mat-form-field
-        [class]="'flex-auto w-full'"
-        [appearance]="'fill'"
-        [floatLabel]="'always'" >
-        <mat-label>Hasło</mat-label>
-        <input
-          matInput
-          [formControl]="getFormField('password', createUserForm)"
-          [id]="'password'"
-          [placeholder]="'Hasło'"
-        />
-        @if (getFormField('password', createUserForm).invalid) {
-          <mat-error>
-            {{ getErrorMessage("password") }}
-          </mat-error>
-        }
-      </mat-form-field>
     </div>
 
     @if (roles() && roles()?.length) {

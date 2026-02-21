@@ -4,6 +4,7 @@ import {AuthGuard} from '@/app/core/auth/guards/auth.guard';
 import {AuthRedirectGuard} from '@/app/core/auth/guards/auth-redirect.guard';
 import {LoginComponent} from '@/app/core/auth/login/login.component';
 import { PermissionGuard } from '@/app/core/auth/guards/permission-guard';
+import {SetPasswordGuard} from '@/app/core/auth/guards/set-password.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -11,6 +12,12 @@ export const routes: Routes = [
     path: 'login',
     component: LoginComponent,
     canActivate: [AuthRedirectGuard],
+  },
+  {
+    path: 'set-password/:invitationToken',
+    loadChildren: () =>
+      import('./core/auth/set-password/set-password.routes').then((m) => m.default),
+    canActivate: [SetPasswordGuard],
   },
   {
     path: 'dashboard',
@@ -33,7 +40,7 @@ export const routes: Routes = [
       {
         path: 'calendar',
         loadChildren: () => import('./modules/calendar/calendar.routes').then((m) => m.default),
-      }
+      },
       // {
       //   path: '404-not-found',
       //   pathMatch: 'full',

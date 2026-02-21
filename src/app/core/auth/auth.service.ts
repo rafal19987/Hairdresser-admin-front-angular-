@@ -232,4 +232,17 @@ export class AuthService {
     );
   }
 
+  public setPassword(token: string, payload: { password: string; repeatPassword: string }): Observable<any> {
+    return this._httpClient.post(
+      `${environment.API_URL}/api/auth/set-password/${token}`,
+      payload
+    );
+  }
+
+  public verifyInvitationToken(token: string): Observable<any> {
+    return this._httpClient.get(
+      `${environment.API_URL}/api/auth/verify-invitation/${token}`
+    );
+  }
+
 }

@@ -132,6 +132,11 @@ export class UserService {
       .pipe()
   }
 
+  public update(uuid: string, payload: CreateUserPayload): Observable<ApiResponse> {
+    return this._httpClient.put<ApiResponse>(environment.API_URL + `/api/users/${uuid}`, {...payload})
+      .pipe()
+  }
+
   public softDelete(id: string): Observable<any> {
     return this._httpClient.delete(environment.API_URL + `/api/users/${id}`)
       .pipe(
