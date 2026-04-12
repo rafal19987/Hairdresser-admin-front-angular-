@@ -38,6 +38,22 @@ export const routes: Routes = [
         data: { resource: 'roles', action: 'read' }
       },
       {
+        path: 'users-services',
+        loadChildren: () =>
+          import('./modules/admin/users-services/users-services.routes').then(
+            (m) => m.default,
+          ),
+        canActivate: [PermissionGuard],
+        data: {resource: 'services', action: 'read'},
+      },
+      {
+        path: 'services',
+        loadChildren: () =>
+          import('./modules/admin/services/services.routes').then((m) => m.default),
+        canActivate: [PermissionGuard],
+        data: {resource: 'services', action: 'read'},
+      },
+      {
         path: 'calendar',
         loadChildren: () => import('./modules/calendar/calendar.routes').then((m) => m.default),
       },

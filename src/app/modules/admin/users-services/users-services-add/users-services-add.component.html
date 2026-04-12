@@ -1,0 +1,88 @@
+@if (form) {
+  <form
+    class="w-full h-full flex flex-col gap-4 p-4 max-w-lg"
+    [formGroup]="form"
+  >
+    <h2 class="text-xl font-semibold mb-2">Nowe przypisanie usługi</h2>
+
+    <!-- Pracownik -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Pracownik</mat-label>
+      <mat-select formControlName="userUuid">
+        @for (user of $users(); track user.uuid) {
+          <mat-option [value]="user.uuid">
+            {{ user.firstName }} {{ user.lastName }} ({{ user.email }})
+          </mat-option>
+        }
+      </mat-select>
+      @if (form.get('userUuid')?.hasError('required') && form.get('userUuid')?.touched) {
+        <mat-error>Wybierz pracownika</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Usługa -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Usługa</mat-label>
+      <mat-select formControlName="serviceUuid">
+        @for (service of $services(); track service.uuid) {
+          <mat-option [value]="service.uuid">
+            {{ service.name }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (form.get('serviceUuid')?.hasError('required') && form.get('serviceUuid')?.touched) {
+        <mat-error>Wybierz usługę</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Cena -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Cena (zł)</mat-label>
+      <input matInput type="number" formControlName="price" min="0" step="0.01" />
+      @if (form.get('price')?.hasError('required') && form.get('price')?.touched) {
+        <mat-error>Podaj cenę</mat-error>
+      }
+      @if (form.get('price')?.hasError('min')) {
+        <mat-error>Cena nie może być ujemna</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Czas trwania -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Czas trwania</mat-label>
+      <mat-select formControlName="duration">
+        @for (option of USERS_SERVICES_DURATION_OPTIONS; track option.value) {
+          <mat-option [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (form.get('duration')?.hasError('required') && form.get('duration')?.touched) {
+        <mat-error>Wybierz czas trwania</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Aktywne -->
+    <mat-slide-toggle formControlName="active">
+      Aktywne
+    </mat-slide-toggle>
+
+    <div class="flex gap-2 mt-4">
+      <button
+        mat-flat-button
+        [type]="'submit'"
+        [disabled]="isLoading"
+        (click)="sendForm($event)"
+      >
+        Dodaj przypisanie
+      </button>
+      <button
+        mat-stroked-button
+        type="button"
+        routerLink="/dashboard/users-services"
+      >
+        Anuluj
+      </button>
+    </div>
+  </form>
+}

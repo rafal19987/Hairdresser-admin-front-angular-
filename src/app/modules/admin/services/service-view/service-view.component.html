@@ -1,0 +1,81 @@
+@if ($service()) {
+  <div class="p-4 max-w-2xl">
+
+    <div class="flex items-center justify-between mb-6">
+      <div>
+
+        <a
+        routerLink="/dashboard/services"
+        class="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1 mb-1"
+        >
+        ← Wróć do listy
+        </a>
+        <h2 class="text-xl font-semibold">Szczegóły usługi</h2>
+      </div>
+      <button
+        *hasPermission="{ resource: 'services', action: 'delete' }"
+        mat-stroked-button
+        color="warn"
+        (click)="onSoftDelete()"
+      >
+        Usuń usługę
+      </button>
+    </div>
+
+    <div class="bg-white rounded-lg border p-4">
+      <h3 class="text-sm font-semibold text-gray-500 uppercase mb-4">Edytuj usługę</h3>
+
+      @if (form) {
+        <form class="flex flex-col gap-4" [formGroup]="form">
+
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Nazwa</mat-label>
+            <input matInput formControlName="name" />
+            @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
+              <mat-error>Nazwa jest wymagana</mat-error>
+            }
+            @if (form.get('name')?.hasError('minlength')) {
+              <mat-error>Nazwa musi mieć minimum 3 znaki</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Opis</mat-label>
+            <textarea matInput formControlName="description" rows="3"></textarea>
+            @if (form.get('description')?.hasError('required') && form.get('description')?.touched) {
+              <mat-error>Opis jest wymagany</mat-error>
+            }
+            @if (form.get('description')?.hasError('minlength')) {
+              <mat-error>Opis musi mieć minimum 8 znaków</mat-error>
+            }
+            @if (form.get('description')?.hasError('maxlength')) {
+              <mat-error>Opis może mieć maksymalnie 50 znaków</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-slide-toggle formControlName="active">
+            Aktywna
+          </mat-slide-toggle>
+
+          <div class="flex gap-2 mt-2">
+            <button
+              *hasPermission="{ resource: 'services', action: 'write' }"
+              mat-flat-button
+              [disabled]="$isLoading()"
+              (click)="sendForm($event)"
+            >
+              Zapisz zmiany
+            </button>
+            <button
+              mat-stroked-button
+              type="button"
+              routerLink="/dashboard/services"
+            >
+              Anuluj
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+}
