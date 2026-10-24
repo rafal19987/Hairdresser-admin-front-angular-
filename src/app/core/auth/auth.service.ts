@@ -1,11 +1,12 @@
 import {inject, Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { map, mergeWith, Observable, of, switchMap, tap, throwError } from 'rxjs';
+import { map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import {UserService} from '@/app/core/user/user.service';
 import {environment} from '@/environments/environment';
-import { catchError } from 'rxjs/operators';
+import { catchError, finalize, shareReplay } from 'rxjs/operators';
 import { User } from '@/app/core/user/user.types';
+import { AuthTokens } from '@/app/core/auth/auth.types';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +17,9 @@ export class AuthService {
   private readonly _userService = inject(UserService);
 
   private _authenticated: boolean = false;
+
+  // The backend rotates the refresh token on every use, so concurrent callers must share a single refresh request
+  private _refreshInProgress$: Observable<AuthTokens> | null = null;
 
   get accessToken(): string {
     return localStorage.getItem('accessToken') || '';
@@ -46,7 +50,13 @@ export class AuthService {
       return true;
     }
 
-    const date = this._getTokenExpirationDate(token);
+    let date: Date | null;
+
+    try {
+      date = this._getTokenExpirationDate(token);
+    } catch {
+      return true;
+    }
 
     offsetSeconds = offsetSeconds || 0;
 
@@ -178,30 +188,58 @@ export class AuthService {
 
   public logout(payload: {refreshToken: string, accessToken: string}): Observable<any> {
     return this._httpClient.post(environment.API_URL + '/api/auth/logout', payload).pipe(
-      tap(() => {
+      finalize(() => {
         this.clearTokens();
-        this._authenticated = false;
-        this._userService.clearUserId();
         this._router.navigate(['/login']).then(r => r);
       })
     )
   }
 
-  signInUsingToken(): Observable<{ user: User; newAccessToken?: string }> {
-    const token = this.accessToken;
+  public refreshTokens(): Observable<AuthTokens> {
+    if (this._refreshInProgress$) {
+      return this._refreshInProgress$;
+    }
 
-    if (!token) {
+    const refreshToken = this.refreshToken;
+
+    if (!refreshToken) {
+      return throwError(() => new Error('No refresh token available'));
+    }
+
+    this._refreshInProgress$ = this._httpClient.post<AuthTokens>(
+      environment.API_URL + '/api/auth/refresh',
+      { refreshToken }
+    ).pipe(
+      tap((tokens) => {
+        this.accessToken = tokens.accessToken;
+        this.refreshToken = tokens.refreshToken;
+      }),
+      finalize(() => {
+        this._refreshInProgress$ = null;
+      }),
+      shareReplay(1)
+    );
+
+    return this._refreshInProgress$;
+  }
+
+  signInUsingToken(): Observable<{ user: User }> {
+    if (!this.accessToken && !this.refreshToken) {
       return throwError(() => new Error('No access token available'));
     }
 
-    return this._httpClient.post<{ user: User; newAccessToken?: string }>(
-      environment.API_URL + '/api/auth/verify-token',
-      { accessToken: token }
-    ).pipe(
-      tap((response) => {
-        if (response.newAccessToken) {
-          this.accessToken = response.newAccessToken;
-        }
+    const accessToken$ = this._isTokenExpired(this.accessToken)
+      ? this.refreshTokens().pipe(map((tokens) => tokens.accessToken))
+      : of(this.accessToken);
+
+    return accessToken$.pipe(
+      switchMap((accessToken) =>
+        this._httpClient.post<{ user: User }>(
+          environment.API_URL + '/api/auth/verify-token',
+          { accessToken }
+        )
+      ),
+      tap(() => {
         this._authenticated = true;
       }),
       catchError((error) => {
@@ -217,12 +255,7 @@ export class AuthService {
       return of(true);
     }
 
-    if (!this.accessToken) {
-      return of(false);
-    }
-
-    if (this._isTokenExpired(this.accessToken)) {
-      this.clearTokens();
+    if (!this.accessToken && !this.refreshToken) {
       return of(false);
     }
 

@@ -8,31 +8,58 @@ import {
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
+import { AuthService } from '@/app/core/auth/auth.service';
+
+// A 401 from these endpoints does not mean an expired access token; refreshing on them would loop
+const AUTH_ENDPOINTS = [
+  '/api/auth/login',
+  '/api/auth/refresh',
+  '/api/auth/logout',
+  '/api/auth/verify-token',
+];
+
+const isAuthEndpoint = (url: string): boolean =>
+  AUTH_ENDPOINTS.some(endpoint => url.includes(endpoint));
+
+const withAuthHeader = (
+  req: HttpRequest<unknown>,
+  token: string
+): HttpRequest<unknown> =>
+  token
+    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+    : req;
 
 export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> => {
   const router = inject(Router);
-  const token = localStorage.getItem('accessToken');
+  const authService = inject(AuthService);
 
-  if (token) {
-    req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
+  const logoutAndRedirect = (): void => {
+    authService.clearTokens();
+    router.navigate(['/login']);
+  };
 
-  return next(req).pipe(
+  return next(withAuthHeader(req, authService.accessToken)).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
-        // Wylogowanie użytkownika przy błędzie 401
-        localStorage.removeItem('accessToken');
-        router.navigate(['/login']);
+      if (error.status !== 401 || isAuthEndpoint(req.url)) {
+        return throwError(() => error);
       }
-      return throwError(error);
+
+      if (!authService.refreshToken) {
+        logoutAndRedirect();
+        return throwError(() => error);
+      }
+
+      return authService.refreshTokens().pipe(
+        catchError(refreshError => {
+          logoutAndRedirect();
+          return throwError(() => refreshError);
+        }),
+        switchMap(tokens => next(withAuthHeader(req, tokens.accessToken)))
+      );
     })
   );
 };
