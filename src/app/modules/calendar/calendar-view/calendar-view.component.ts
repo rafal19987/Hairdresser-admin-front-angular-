@@ -31,6 +31,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatCheckbox} from '@angular/material/checkbox';
 import {AppointmentService} from '@/app/core/appointment/appointment.service';
+import '@/app/core/locale';
 
 @Component({
   selector: 'app-calendar-view',
