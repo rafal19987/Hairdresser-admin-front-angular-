@@ -1,0 +1,52 @@
+<div class="flex flex-col gap-2">
+  @for (range of ranges().controls; track range; let i = $index) {
+    <div class="flex items-center gap-2" [formGroup]="range">
+      <input
+        type="time"
+        class="border rounded px-2 py-1"
+        formControlName="opensAt"
+        aria-label="Godzina otwarcia"
+      />
+      <span class="text-gray-400">–</span>
+      <input
+        type="time"
+        class="border rounded px-2 py-1"
+        formControlName="closesAt"
+        aria-label="Godzina zamknięcia"
+      />
+      @if (ranges().enabled) {
+        <button
+          mat-icon-button
+          type="button"
+          aria-label="Usuń przedział"
+          (click)="removeRange(i)"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </div>
+    @if (range.hasError('timeRangeOrder')) {
+      <span class="text-xs text-red-600">
+        Godzina zamknięcia musi być późniejsza niż otwarcia
+      </span>
+    }
+    @if (range.get('opensAt')?.hasError('required') || range.get('closesAt')?.hasError('required')) {
+      <span class="text-xs text-red-600">Podaj obie godziny</span>
+    }
+  } @empty {
+    <span class="text-sm text-gray-400 py-1">{{ emptyLabel() }}</span>
+  }
+
+  @if (ranges().hasError('timeRangeOverlap')) {
+    <span class="text-xs text-red-600">Przedziały nachodzą na siebie</span>
+  }
+
+  @if (ranges().enabled) {
+    <div>
+      <button mat-button type="button" (click)="addRange()">
+        <mat-icon>add</mat-icon>
+        Dodaj przedział
+      </button>
+    </div>
+  }
+</div>

@@ -16,7 +16,7 @@ export const AdminAuthGuard: CanActivateFn | CanActivateChildFn = (
     .pipe(
       switchMap(authenticated => {
         if (!authenticated) {
-          const urlTree = router.parseUrl('auth/login');
+          const urlTree = router.parseUrl('/login');
           return of(urlTree);
         }
 

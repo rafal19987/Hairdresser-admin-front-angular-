@@ -9,19 +9,13 @@ export function initializeApp() {
     const authService = inject(AuthService);
     const userService = inject(UserService);
 
-    const token = localStorage.getItem('accessToken');
-
-    if (!token) {
+    if (!authService.accessToken && !authService.refreshToken) {
       return of(true);
     }
 
     return authService.signInUsingToken().pipe(
-      map((response: any) => {
+      map((response) => {
         if (response?.user) {
-          if (response.newAccessToken) {
-            authService.accessToken = response.newAccessToken;
-          }
-
           userService.setCurrentUser = response.user;
           userService.setUserId = response.user.uuid;
 

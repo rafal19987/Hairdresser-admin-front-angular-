@@ -36,7 +36,9 @@ export class RolesAddComponent implements OnInit {
   readonly RESOURCES = [
     'users',
     'roles',
-    'services'
+    'services',
+    'settings',
+    'audit-logs',
   ]
 
   readonly ACTIONS: string[] = [

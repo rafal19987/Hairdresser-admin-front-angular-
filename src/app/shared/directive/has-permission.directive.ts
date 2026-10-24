@@ -40,13 +40,9 @@ export class HasPermissionDirective implements OnInit, OnDestroy {
       ).subscribe({
       next: res => {
         this.$userPermission.set(res?.role?.permissions || null);
+        this._updateView();
       }
     })
-
-
-
-
-    this._updateView();
   }
 
   ngOnDestroy(): void {

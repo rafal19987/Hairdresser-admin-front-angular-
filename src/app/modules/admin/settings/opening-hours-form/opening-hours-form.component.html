@@ -1,0 +1,40 @@
+<div class="flex flex-col gap-2">
+  <div>
+    <h3 class="text-sm font-semibold text-gray-500 uppercase">Godziny otwarcia</h3>
+    <p class="text-xs text-gray-400 mt-1">
+      Dzień bez przedziałów jest zamknięty. Kilka przedziałów pozwala zaplanować przerwę.
+    </p>
+  </div>
+
+  <div class="divide-y">
+    @for (day of days; track day.dayOfWeek) {
+      <div class="flex flex-col md:flex-row md:items-start gap-2 py-3">
+        <div class="md:w-40 font-medium pt-1">{{ day.label }}</div>
+        <div class="flex-1">
+          <app-time-ranges [ranges]="day.ranges" />
+        </div>
+        @if (day.dayOfWeek === 1 && form.enabled) {
+          <button
+            *hasPermission="{ resource: 'settings', action: 'write' }"
+            mat-button
+            type="button"
+            (click)="copyToWorkingDays(day)"
+          >
+            Kopiuj na pn–pt
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="flex gap-2 mt-2">
+    <button
+      *hasPermission="{ resource: 'settings', action: 'write' }"
+      mat-flat-button
+      [disabled]="$isLoading() || form.pristine"
+      (click)="sendForm($event)"
+    >
+      Zapisz godziny
+    </button>
+  </div>
+</div>
