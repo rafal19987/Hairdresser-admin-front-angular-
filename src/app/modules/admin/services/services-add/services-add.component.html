@@ -1,0 +1,54 @@
+@if (form) {
+  <form
+    class="w-full h-full flex flex-col gap-4 p-4 max-w-lg"
+    [formGroup]="form"
+  >
+    <h2 class="text-xl font-semibold mb-2">Nowa usługa</h2>
+
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Nazwa</mat-label>
+      <input matInput formControlName="name" placeholder="Nazwa usługi" />
+      @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
+        <mat-error>Nazwa jest wymagana</mat-error>
+      }
+      @if (form.get('name')?.hasError('minlength')) {
+        <mat-error>Nazwa musi mieć minimum 3 znaki</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Opis</mat-label>
+      <textarea matInput formControlName="description" placeholder="Opis usługi" rows="3"></textarea>
+      @if (form.get('description')?.hasError('required') && form.get('description')?.touched) {
+        <mat-error>Opis jest wymagany</mat-error>
+      }
+      @if (form.get('description')?.hasError('minlength')) {
+        <mat-error>Opis musi mieć minimum 8 znaków</mat-error>
+      }
+      @if (form.get('description')?.hasError('maxlength')) {
+        <mat-error>Opis może mieć maksymalnie 50 znaków</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-slide-toggle formControlName="active">
+      Aktywna
+    </mat-slide-toggle>
+
+    <div class="flex gap-2 mt-4">
+      <button
+        mat-flat-button
+        [disabled]="isLoading"
+        (click)="sendForm($event)"
+      >
+        Dodaj usługę
+      </button>
+      <button
+        mat-stroked-button
+        type="button"
+        routerLink="/dashboard/services"
+      >
+        Anuluj
+      </button>
+    </div>
+  </form>
+}

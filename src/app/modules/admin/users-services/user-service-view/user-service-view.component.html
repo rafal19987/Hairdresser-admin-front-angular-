@@ -1,0 +1,118 @@
+@if ($userService()) {
+  <div class="p-4 max-w-2xl">
+
+    <!-- Nagłówek -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+
+        <a
+        routerLink="/dashboard/users-services"
+        class="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1 mb-1"
+        >
+        ← Wróć do listy
+        </a>
+        <h2 class="text-xl font-semibold">Szczegóły przypisania</h2>
+      </div>
+      <button
+        *hasPermission="{ resource: 'services', action: 'delete' }"
+        mat-stroked-button
+        color="warn"
+        (click)="onDelete()"
+      >
+        Usuń przypisanie
+      </button>
+    </div>
+
+    <!-- Informacje o pracowniku -->
+    <div class="bg-white rounded-lg border p-4 mb-4">
+      <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Pracownik</h3>
+      <div class="grid grid-cols-2 gap-2 text-sm">
+        <div>
+          <span class="text-gray-400">Imię i nazwisko</span>
+          <p class="font-medium">
+            {{ $userService()!.user.firstName }} {{ $userService()!.user.lastName }}
+          </p>
+        </div>
+        <div>
+          <span class="text-gray-400">Email</span>
+          <p class="font-medium">{{ $userService()!.user.email }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informacje o usłudze -->
+    <div class="bg-white rounded-lg border p-4 mb-4">
+      <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Usługa</h3>
+      <div class="grid grid-cols-2 gap-2 text-sm">
+        <div>
+          <span class="text-gray-400">Nazwa</span>
+          <p class="font-medium">{{ $userService()!.service.name }}</p>
+        </div>
+        <div>
+          <span class="text-gray-400">Opis</span>
+          <p class="font-medium">{{ $userService()!.service.description }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formularz edycji -->
+    <div class="bg-white rounded-lg border p-4">
+      <h3 class="text-sm font-semibold text-gray-500 uppercase mb-4">Edytuj przypisanie</h3>
+
+      @if (form) {
+        <form
+          class="flex flex-col gap-4"
+          [formGroup]="form"
+        >
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Cena (zł)</mat-label>
+            <input matInput type="number" formControlName="price" min="0" step="0.01" />
+            @if (form.get('price')?.hasError('required') && form.get('price')?.touched) {
+              <mat-error>Podaj cenę</mat-error>
+            }
+            @if (form.get('price')?.hasError('min')) {
+              <mat-error>Cena nie może być ujemna</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Czas trwania</mat-label>
+            <mat-select formControlName="duration">
+              @for (option of USERS_SERVICES_DURATION_OPTIONS; track option.value) {
+                <mat-option [value]="option.value">
+                  {{ option.label }}
+                </mat-option>
+              }
+            </mat-select>
+            @if (form.get('duration')?.hasError('required') && form.get('duration')?.touched) {
+              <mat-error>Wybierz czas trwania</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-slide-toggle formControlName="active">
+            Aktywne
+          </mat-slide-toggle>
+
+          <div class="flex gap-2 mt-2">
+            <button
+              *hasPermission="{ resource: 'services', action: 'write' }"
+              mat-flat-button
+              [disabled]="$isLoading()"
+              (click)="sendForm($event)"
+            >
+              Zapisz zmiany
+            </button>
+            <button
+              mat-stroked-button
+              type="button"
+              routerLink="/dashboard/users-services"
+            >
+              Anuluj
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+
+  </div>
+}
