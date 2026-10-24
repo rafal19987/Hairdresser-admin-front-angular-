@@ -1,4 +1,10 @@
-import {ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {CalendarService} from '@/app/core/calendar/calendar.service';
 import {CalendarStateService} from '@/app/core/calendar/calendar-state.service';
 import {CalendarEvent} from '@/app/core/calendar/calendar.types';
@@ -24,6 +30,7 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatCheckbox} from '@angular/material/checkbox';
+import {AppointmentService} from '@/app/core/appointment/appointment.service';
 
 @Component({
   selector: 'app-calendar-view',
@@ -37,91 +44,102 @@ import {MatCheckbox} from '@angular/material/checkbox';
     CalendarScheduleViewComponent,
     MatButton,
     ReactiveFormsModule,
-    MatCheckbox
+    MatCheckbox,
   ],
   templateUrl: './calendar-view.component.html',
   styleUrl: './calendar-view.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarViewComponent implements OnInit {
   protected readonly calendarState = inject(CalendarStateService);
 
   private readonly _calendarService = inject(CalendarService);
+  private readonly _appointmentService = inject(AppointmentService);
   private readonly _dialog = inject(MatDialog);
   private readonly _destroyRef = inject(DestroyRef);
-  private readonly api = inject(CalendarService);
 
   protected readonly myCalendars = this._calendarService.$userCalendars;
 
-  ngOnInit() {
-    this.loadEvents();
-    this.initializeVisibleCalendars();
+  ngOnInit(): void {
+    this._loadEvents();
+    this._initializeVisibleCalendars();
   }
 
-  private loadEvents() {
+  private _loadEvents(): void {
+    const calendars = this._calendarService.$userCalendars();
+    const defaultCalendar = calendars?.find((c) => c.isDefault) ?? calendars?.[0];
+
+    if (!defaultCalendar) {
+      this.calendarState.setError('Brak kalendarza — najpierw utwórz kalendarz');
+      return;
+    }
+
     const range = this.calendarState.getDateRangeForView(
       this.calendarState.currentDate(),
-      this.calendarState.currentView()
+      this.calendarState.currentView(),
     );
 
     this.calendarState.setLoading(true);
 
-    this.api.getEvents(range)
-      .pipe(
-        takeUntilDestroyed(this._destroyRef)
-      )
+    this._calendarService
+      .getEvents(range, defaultCalendar.uuid)
+      .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe({
-      next: (events) => {
-        events.forEach(e => this.calendarState.addEvent(e));
-        this.calendarState.setLoading(false);
-        console.log(this.calendarState.events());
-      },
-      error: (err) => {
-        this.calendarState.setError('Nie udało się załadować wydarzeń');
-        this.calendarState.setLoading(false);
-      }
+        next: (events) => {
+          events.forEach((e) => this.calendarState.addEvent(e));
+          this.calendarState.setLoading(false);
+        },
+        error: () => {
+          this.calendarState.setError('Nie udało się załadować wizyt');
+          this.calendarState.setLoading(false);
+        },
+      });
+  }
+
+  private _initializeVisibleCalendars(): void {
+    const calendars = this._calendarService.$userCalendars();
+    calendars?.forEach((c) => {
+      this.calendarState.toggleCalendar(c.uuid);
     });
   }
 
-  private initializeVisibleCalendars() {
-    const currentUserId = localStorage.getItem('userId');
-    if (currentUserId) {
-      this.calendarState.toggleCalendar(currentUserId);
-    }
-
-    this.calendarState.toggleCalendar('user-1');
-    this.calendarState.toggleCalendar('user-2');
-    this.calendarState.toggleCalendar('user-3');
-  }
-
-  handleEventClick(event: CalendarEvent) {
+  handleEventClick(event: CalendarEvent): void {
     this.calendarState.selectEvent(event.id);
   }
 
   handleDateChange(date: Date): void {
     this.calendarState.setDate(date);
-    this.loadEvents();
+    this._loadEvents();
   }
 
   handleEventDrop(data: { eventId: string; newDate: Date }): void {
-    const event = this.calendarState.events().find(e => e.id === data.eventId);
-    if (!event) return;
+    const event = this.calendarState.events().find((e) => e.id === data.eventId);
+    if (!event || !event.appointmentUuid) return;
 
     const duration = event.scheduleEndAt.getTime() - event.scheduleAt.getTime();
-    const newEndDate = new Date(data.newDate.getTime() + duration);
+    const newScheduledAt = data.newDate;
+    const newScheduledEndAt = new Date(newScheduledAt.getTime() + duration);
 
-    this.api.updateEvent(data.eventId, {
-      id: data.eventId,
-      startDate: data.newDate,
-      endDate: newEndDate
-    }).subscribe({
-      next: (updated) => {
-        this.calendarState.updateEvent(updated);
-      },
-      error: (err) => {
-        console.error('Error updating event:', err);
-      }
-    });
+    this._appointmentService
+      .reschedule(event.appointmentUuid, {
+        scheduledAt: newScheduledAt.toISOString(),
+        scheduledEndAt: newScheduledEndAt.toISOString(),
+        rescheduledBy: 'staff',
+      })
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe({
+        next: () => {
+          // odśwież eventy po przełożeniu
+          this._loadEvents();
+        },
+        error: (err) => {
+          console.error('Błąd przełożenia wizyty:', err);
+        },
+      });
+  }
+
+  handleToggleCalendar(calendarUuid: string): void {
+    this.calendarState.toggleCalendar(calendarUuid);
   }
 
   openCreateCalendarDialog(): void {
@@ -129,12 +147,14 @@ export class CalendarViewComponent implements OnInit {
       width: '500px',
       maxWidth: '90vw',
       disableClose: false,
-    })
+    });
 
-    dialogRef.afterClosed()
+    dialogRef
+      .afterClosed()
       .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe((result) => {
-        if (result?.calendarName) {
+        if (result) {
+          this._loadEvents();
         }
       });
   }

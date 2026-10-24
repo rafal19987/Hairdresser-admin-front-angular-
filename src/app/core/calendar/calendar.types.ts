@@ -1,4 +1,5 @@
 import {User} from '@/app/core/user/user.types';
+import {AppointmentStatus} from '@/app/core/appointment/appointment.types';
 
 export const HOUR_HEIGHT_PIXELS = 60;
 
@@ -26,18 +27,18 @@ export interface CalendarEvent {
   color: string;
   userId: string;
   userName?: string;
-
-  // Optional fields based on type
+  appointmentUuid?: string;
+  calendarUuid?: string;
+  status?: AppointmentStatus;
+  price?: number;
+  duration?: number;
+  clientEmail?: string;
+  clientPhone?: string;
   location?: string;
   notes?: string;
-
-  // Meeting specific
-  meetingType?: 'video' | 'stationary' | 'phone';
+  meetingType?: MeeetingTypes;
   meetingLink?: string;
   phoneNumber?: string;
-
-
-  // Metadata
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -58,7 +59,7 @@ export interface CreateEventDto {
   type: EventType;
   location?: string;
   notes?: string;
-  meetingType?: 'video' | 'stationary' | 'phone';
+  meetingType?: MeeetingTypes;
   meetingLink?: string;
   phoneNumber?: string;
 }
@@ -66,3 +67,5 @@ export interface CreateEventDto {
 export interface UpdateEventDto extends Partial<CreateEventDto> {
   id: string;
 }
+
+export type MeeetingTypes = 'video' | 'stationary' | 'phone';

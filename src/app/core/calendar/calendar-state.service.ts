@@ -44,35 +44,24 @@ export class CalendarStateService {
     const allEvents = Array.from(s.events.values());
     const range = this.getDateRangeForView(s.currentDate, s.currentView);
 
-    return allEvents.filter(event => {
-      // Filter by date range
+    return allEvents.filter((event) => {
       if (event.scheduleAt < range.start || event.scheduleAt > range.end) {
         return false;
       }
-
-      // Filter by visible calendars
-      if (!s.visibleCalendars.has(event.userId)) {
+      
+      const calendarId = event.calendarUuid ?? event.userId;
+      if (!s.visibleCalendars.has(calendarId)) {
         return false;
       }
 
-      // Filter by search query
       if (s.filters.searchQuery) {
         const query = s.filters.searchQuery.toLowerCase();
-        if (!event.title.toLowerCase().includes(query) &&
-          !event.notes?.toLowerCase().includes(query)) {
+        if (
+          !event.title.toLowerCase().includes(query) &&
+          !event.notes?.toLowerCase().includes(query)
+        ) {
           return false;
         }
-      }
-
-      // Filter by type
-      // @ts-ignore
-      if (s.filters.type && event.type !== s.filters.type) {
-        return false;
-      }
-
-      // Filter by meeting type
-      if (s.filters.meetingType && event.meetingType !== s.filters.meetingType) {
-        return false;
       }
 
       return true;

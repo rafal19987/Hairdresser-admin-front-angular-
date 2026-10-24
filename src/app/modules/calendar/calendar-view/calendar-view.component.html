@@ -1,29 +1,39 @@
 <div class="flex flex-col min-h-screen p-5">
-  <div class="mb-5">
-    <h2>Kalendarz</h2>
-    <p>Current view: {{ calendarState.currentView() }}</p>
-    <p>Date: {{ calendarState.currentDate() | date:'fullDate' }}</p>
 
-    <button
-    mat-flat-button
-    (click)="openCreateCalendarDialog()"
-    >Dodaj kalendarz</button>
+  <div class="mb-5 flex items-center justify-between">
+    <div>
+      <h2 class="text-2xl font-semibold">Kalendarz</h2>
+      <p class="text-sm text-gray-500">
+        {{ calendarState.currentDate() | date:'fullDate':'':'pl' }}
+      </p>
+    </div>
 
-
-    @if (myCalendars()?.length) {
-      <ul>
-        <span>Moje kalendarze:</span>
-        @for (calendar of myCalendars(); track calendar.uuid) {
-          <li>
-            <mat-checkbox>{{ calendar.name }}</mat-checkbox>
-          </li>
-        }
-      </ul>
-    }
+    <button mat-flat-button (click)="openCreateCalendarDialog()">
+      Dodaj kalendarz
+    </button>
   </div>
 
-  <!-- Temporary: Show events count -->
-  <div class="flex-1 mt-4">
+  @if (myCalendars()?.length) {
+    <div class="mb-4 flex items-center gap-4 flex-wrap">
+      <span class="text-sm font-medium text-gray-600">Kalendarze:</span>
+      @for (calendar of myCalendars(); track calendar.uuid) {
+        <mat-checkbox
+          [checked]="calendarState.isCalendarVisible(calendar.uuid)"
+          (change)="handleToggleCalendar(calendar.uuid)"
+        >
+          <span class="flex items-center gap-1">
+            <span
+              class="inline-block w-3 h-3 rounded-full"
+              [style.background]="calendar.color"
+            ></span>
+            {{ calendar.name }}
+          </span>
+        </mat-checkbox>
+      }
+    </div>
+  }
+
+  <div class="flex-1">
     <app-calendar-header
       [currentDate]="calendarState.currentDate()"
       [currentView]="calendarState.currentView()"
@@ -31,46 +41,48 @@
       (dateChange)="handleDateChange($event)"
     />
 
-    @switch (calendarState.currentView()) {
-      @case ('month') {
-        <app-calendar-month-view
-          [date]="calendarState.currentDate()"
-          [events]="calendarState.filteredEvents()"
-          (eventClick)="handleEventClick($event)"
-        />
-      }
-      @case ('week') {
-        <app-calendar-week-view
-          [date]="calendarState.currentDate()"
-          [events]="calendarState.filteredEvents()"
-          (eventClick)="handleEventClick($event)"
-          (eventDrop)="handleEventDrop($event)"
-        />
-      }
-      @case ('day') {
-        <app-calendar-day-view
-          [date]="calendarState.currentDate()"
-          [events]="calendarState.filteredEvents()"
-          (eventClick)="handleEventClick($event)"
-          (eventDrop)="handleEventDrop($event)"
-        />
-      }
-      @case ('schedule') {
-        <app-calendar-schedule-view
-          [date]="calendarState.currentDate()"
-          [events]="calendarState.filteredEvents()"
-          (eventClick)="handleEventClick($event)"
-        />
-      }
-    }
-
-
     @if (calendarState.loading()) {
-      <p>Ładowanie...</p>
+      <div class="flex items-center justify-center h-64 text-gray-400">
+        <p>Ładowanie wizyt...</p>
+      </div>
     } @else if (calendarState.error()) {
-      <p class="text-red-600 text-sm">{{ calendarState.error() }}</p>
+      <div class="flex items-center justify-center h-64">
+        <p class="text-red-500 text-sm">{{ calendarState.error() }}</p>
+      </div>
     } @else {
-      <p>Liczba wydarzeń: {{ calendarState.filteredEvents().length }}</p>
+      @switch (calendarState.currentView()) {
+        @case ('month') {
+          <app-calendar-month-view
+            [date]="calendarState.currentDate()"
+            [events]="calendarState.filteredEvents()"
+            (eventClick)="handleEventClick($event)"
+          />
+        }
+        @case ('week') {
+          <app-calendar-week-view
+            [date]="calendarState.currentDate()"
+            [events]="calendarState.filteredEvents()"
+            (eventClick)="handleEventClick($event)"
+            (eventDrop)="handleEventDrop($event)"
+          />
+        }
+        @case ('day') {
+          <app-calendar-day-view
+            [date]="calendarState.currentDate()"
+            [events]="calendarState.filteredEvents()"
+            (eventClick)="handleEventClick($event)"
+            (eventDrop)="handleEventDrop($event)"
+          />
+        }
+        @case ('schedule') {
+          <app-calendar-schedule-view
+            [date]="calendarState.currentDate()"
+            [events]="calendarState.filteredEvents()"
+            (eventClick)="handleEventClick($event)"
+          />
+        }
+      }
     }
   </div>
+
 </div>
