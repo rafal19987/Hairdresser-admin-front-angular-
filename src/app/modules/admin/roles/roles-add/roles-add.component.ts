@@ -38,6 +38,7 @@ export class RolesAddComponent implements OnInit {
     'roles',
     'services',
     'settings',
+    'audit-logs',
   ]
 
   readonly ACTIONS: string[] = [

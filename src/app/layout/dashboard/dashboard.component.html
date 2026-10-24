@@ -84,6 +84,15 @@
       </a>
 
       <a
+        *hasPermission="{ resource: 'audit-logs', action: 'read' }"
+        routerLink="/dashboard/audit-logs"
+        routerLinkActive="bg-gray-200 text-gray-800"
+        class="block py-2 px-4 rounded hover:bg-gray-200"
+      >
+        Logi zdarzeń
+      </a>
+
+      <a
         routerLink="/dashboard/settings"
         routerLinkActive="bg-gray-200 text-gray-800"
         class="block py-2 px-4 rounded hover:bg-gray-200"

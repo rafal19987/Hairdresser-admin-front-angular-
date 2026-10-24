@@ -1,0 +1,108 @@
+<div class="p-4 flex flex-col gap-4">
+  <div class="flex items-center justify-between">
+    <h2 class="text-xl font-semibold">
+      Logi zdarzeń: {{ $pagination()?.total ?? 0 }}
+    </h2>
+  </div>
+
+  <form class="grid grid-cols-1 md:grid-cols-5 gap-x-4 items-start" [formGroup]="filters">
+    <mat-form-field appearance="fill" class="md:col-span-2">
+      <mat-label>Szukaj (email, id obiektu)</mat-label>
+      <input matInput formControlName="query" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Akcja</mat-label>
+      <mat-select formControlName="action">
+        <mat-option value="">Wszystkie</mat-option>
+        @for (action of ACTIONS; track action[0]) {
+          <mat-option [value]="action[0]">{{ action[1] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Kto</mat-label>
+      <mat-select formControlName="actorType">
+        <mat-option value="">Wszyscy</mat-option>
+        @for (actor of ACTOR_TYPES; track actor[0]) {
+          <mat-option [value]="actor[0]">{{ actor[1] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="flex gap-2">
+      <mat-form-field appearance="fill" class="flex-1">
+        <mat-label>Od</mat-label>
+        <input matInput type="date" formControlName="from" />
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="flex-1">
+        <mat-label>Do</mat-label>
+        <input matInput type="date" formControlName="to" />
+      </mat-form-field>
+    </div>
+  </form>
+
+  <div>
+    <button mat-stroked-button type="button" (click)="clearFilters()">Wyczyść filtry</button>
+  </div>
+
+  <div class="w-full overflow-x-auto">
+    <table class="w-full text-sm text-left">
+      <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+        <tr>
+          <th class="px-4 py-3">Data</th>
+          <th class="px-4 py-3">Akcja</th>
+          <th class="px-4 py-3">Kto</th>
+          <th class="px-4 py-3">Obiekt</th>
+          <th class="px-4 py-3">IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (entry of $entries(); track entry.uuid) {
+          <tr
+            class="border-b hover:bg-gray-50 cursor-pointer"
+            tabindex="0"
+            (click)="openDetails(entry)"
+            (keydown.enter)="openDetails(entry)"
+          >
+            <td class="px-4 py-3 whitespace-nowrap">
+              {{ entry.occurredAt | date: 'd MMM y, HH:mm:ss' : '' : 'pl' }}
+            </td>
+            <td class="px-4 py-3">
+              <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs whitespace-nowrap">
+                {{ actionLabel(entry.action) }}
+              </span>
+            </td>
+            <td class="px-4 py-3">
+              <div class="font-medium">{{ entry.actorLabel || '—' }}</div>
+              <div class="text-xs text-gray-400">{{ actorLabel(entry.actorType) }}</div>
+            </td>
+            <td class="px-4 py-3">
+              <div>{{ entityLabel(entry.entityType) }}</div>
+              <div class="text-xs text-gray-400 font-mono">{{ entry.entityId?.slice(0, 8) }}</div>
+            </td>
+            <td class="px-4 py-3 text-gray-500 font-mono text-xs">{{ entry.ipAddress || '—' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="px-4 py-6 text-center text-gray-400">
+              {{ $isLoading() ? 'Ładowanie...' : 'Brak wpisów dla wybranych filtrów' }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if ($pagination(); as pagination) {
+    <mat-paginator
+      [length]="pagination.total"
+      [pageSize]="pagination.itemsPerPage"
+      [pageIndex]="pagination.currentPage - 1"
+      [pageSizeOptions]="[20, 50, 100]"
+      (page)="handlePageEvent($event)"
+    >
+    </mat-paginator>
+  }
+</div>
