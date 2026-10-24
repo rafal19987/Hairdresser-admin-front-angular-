@@ -58,6 +58,12 @@ export const routes: Routes = [
         loadChildren: () => import('./modules/calendar/calendar.routes').then((m) => m.default),
       },
       {
+        path: 'audit-logs',
+        loadChildren: () => import('./modules/admin/audit-logs/audit-logs.routes').then((m) => m.default),
+        canActivate: [PermissionGuard],
+        data: {resource: 'audit-logs', action: 'read'},
+      },
+      {
         path: 'settings',
         loadChildren: () => import('./modules/admin/settings/settings.routes').then((m) => m.default),
         canActivate: [PermissionGuard],

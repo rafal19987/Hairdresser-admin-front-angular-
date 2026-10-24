@@ -8,6 +8,7 @@ import {Router, RouterModule} from '@angular/router';
 import {catchError} from 'rxjs/operators';
 import {EMPTY} from 'rxjs';
 import {AuthService} from '@/app/core/auth/auth.service';
+import {HasPermissionDirective} from '@/app/shared/directive/has-permission.directive';
 
 @Component({
   selector: 'dashboard-layout',
@@ -19,7 +20,8 @@ import {AuthService} from '@/app/core/auth/auth.service';
     MatListModule,
     MatIconModule,
     MatButtonModule,
-    RouterModule
+    RouterModule,
+    HasPermissionDirective,
 ],
 })
 export class DashboardComponent {
