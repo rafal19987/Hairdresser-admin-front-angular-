@@ -1,0 +1,127 @@
+<div class="flex flex-col gap-2">
+  <div class="flex items-start justify-between gap-4">
+    <div>
+      <h3 class="text-sm font-semibold text-gray-500 uppercase">Wyjątki w grafiku</h3>
+      <p class="text-xs text-gray-400 mt-1">
+        Święta, urlopy i dni z innymi godzinami. Wyjątek zastępuje grafik tygodniowy w danym dniu.
+      </p>
+    </div>
+    @if (!$form()) {
+      <button
+        *hasPermission="{ resource: 'settings', action: 'create' }"
+        mat-stroked-button
+        type="button"
+        (click)="openForm()"
+      >
+        Dodaj wyjątek
+      </button>
+    }
+  </div>
+
+  @if ($form(); as form) {
+    <form class="flex flex-col gap-2 border rounded-lg p-4 bg-gray-50" [formGroup]="form">
+      <h4 class="font-medium mb-2">
+        {{ $editedUuid() ? 'Edytuj wyjątek' : 'Nowy wyjątek' }}
+      </h4>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+        <mat-form-field appearance="fill">
+          <mat-label>Data</mat-label>
+          <input matInput type="date" formControlName="date" />
+          @if (form.get('date')?.hasError('required')) {
+            <mat-error>Data jest wymagana</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Nazwa (opcjonalnie)</mat-label>
+          <input matInput formControlName="name" placeholder="np. Wigilia" />
+          @if (form.get('name')?.hasError('maxlength')) {
+            <mat-error>Nazwa może mieć maksymalnie 100 znaków</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <mat-slide-toggle formControlName="isClosed">Salon zamknięty</mat-slide-toggle>
+
+      @if (!form.get('isClosed')?.value) {
+        <div class="mt-2">
+          <span class="text-sm text-gray-500">Godziny otwarcia tego dnia</span>
+          <app-time-ranges [ranges]="hours" emptyLabel="Brak godzin" />
+        </div>
+      }
+
+      <div class="flex gap-2 mt-2">
+        <button mat-flat-button [disabled]="$isLoading()" (click)="sendForm($event)">
+          {{ $editedUuid() ? 'Zapisz zmiany' : 'Dodaj' }}
+        </button>
+        <button mat-stroked-button type="button" (click)="closeForm()">Anuluj</button>
+      </div>
+    </form>
+  }
+
+  <div class="w-full overflow-x-auto">
+    <table class="w-full text-sm text-left">
+      <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+        <tr>
+          <th class="px-4 py-3">Data</th>
+          <th class="px-4 py-3">Nazwa</th>
+          <th class="px-4 py-3">Godziny</th>
+          <th class="px-4 py-3">Akcje</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (specialDay of $salon()?.specialDays ?? []; track specialDay.uuid) {
+          <tr class="border-b hover:bg-gray-50">
+            <td class="px-4 py-3 font-medium whitespace-nowrap">
+              {{ specialDay.date | date: 'EEEE, d MMMM y' : '' : 'pl' }}
+            </td>
+            <td class="px-4 py-3 text-gray-500">{{ specialDay.name || '—' }}</td>
+            <td class="px-4 py-3">
+              @if (specialDay.isClosed) {
+                <span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs">
+                  Zamknięte
+                </span>
+              } @else {
+                @for (range of specialDay.hours; track $index) {
+                  <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs mr-1">
+                    {{ range.opensAt }}–{{ range.closesAt }}
+                  </span>
+                }
+              }
+            </td>
+            <td class="px-4 py-3">
+              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Akcje">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button
+                  *hasPermission="{ resource: 'settings', action: 'write' }"
+                  mat-menu-item
+                  (click)="openForm(specialDay)"
+                >
+                  <mat-icon>edit</mat-icon>
+                  <span>Edytuj</span>
+                </button>
+                <button
+                  *hasPermission="{ resource: 'settings', action: 'delete' }"
+                  mat-menu-item
+                  (click)="onRemove(specialDay)"
+                >
+                  <mat-icon>delete</mat-icon>
+                  <span>Usuń</span>
+                </button>
+              </mat-menu>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" class="px-4 py-6 text-center text-gray-400">
+              Brak nadchodzących wyjątków
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

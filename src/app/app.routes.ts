@@ -57,6 +57,12 @@ export const routes: Routes = [
         path: 'calendar',
         loadChildren: () => import('./modules/calendar/calendar.routes').then((m) => m.default),
       },
+      {
+        path: 'settings',
+        loadChildren: () => import('./modules/admin/settings/settings.routes').then((m) => m.default),
+        canActivate: [PermissionGuard],
+        data: {resource: 'settings', action: 'read'},
+      },
       // {
       //   path: '404-not-found',
       //   pathMatch: 'full',
