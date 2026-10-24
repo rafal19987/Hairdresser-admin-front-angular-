@@ -1,0 +1,24 @@
+<div class="p-4 max-w-4xl flex flex-col gap-4">
+  <h2 class="text-xl font-semibold">Ustawienia salonu</h2>
+
+  @if ($error()) {
+    <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 flex items-center justify-between gap-4">
+      <span>{{ $error() }}</span>
+      <button mat-stroked-button type="button" (click)="loadSalon()">Spróbuj ponownie</button>
+    </div>
+  } @else if ($isLoading() && !$salon()) {
+    <p class="text-gray-400">Ładowanie ustawień...</p>
+  } @else if ($salon()) {
+    <section class="bg-white rounded-lg border p-4">
+      <app-salon-details-form />
+    </section>
+
+    <section class="bg-white rounded-lg border p-4">
+      <app-opening-hours-form />
+    </section>
+
+    <section class="bg-white rounded-lg border p-4">
+      <app-special-days />
+    </section>
+  }
+</div>

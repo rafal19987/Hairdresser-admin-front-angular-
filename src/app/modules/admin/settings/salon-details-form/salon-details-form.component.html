@@ -1,0 +1,92 @@
+<form class="flex flex-col gap-2" [formGroup]="form">
+  <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">Dane salonu</h3>
+
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>Nazwa</mat-label>
+    <input matInput formControlName="name" />
+    @if (form.get('name')?.hasError('required')) {
+      <mat-error>Nazwa jest wymagana</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+    <mat-form-field appearance="fill">
+      <mat-label>Email kontaktowy</mat-label>
+      <input matInput type="email" formControlName="email" />
+      @if (form.get('email')?.hasError('email')) {
+        <mat-error>Nieprawidłowy adres email</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Telefon</mat-label>
+      <input matInput formControlName="phone" />
+      @if (form.get('phone')?.hasError('maxlength')) {
+        <mat-error>Telefon może mieć maksymalnie 30 znaków</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>Strefa czasowa</mat-label>
+    <mat-select formControlName="timeZone">
+      @for (timeZone of TIME_ZONES; track timeZone) {
+        <mat-option [value]="timeZone">{{ timeZone }}</mat-option>
+      }
+    </mat-select>
+    <mat-hint>Godziny otwarcia są podawane w tej strefie czasowej</mat-hint>
+  </mat-form-field>
+
+  <h3 class="text-sm font-semibold text-gray-500 uppercase mt-4 mb-2">Reguły rezerwacji</h3>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+    <mat-form-field appearance="fill">
+      <mat-label>Minimalne wyprzedzenie rezerwacji (min)</mat-label>
+      <input matInput type="number" formControlName="clientMinLeadTimeMinutes" />
+      <mat-hint>Dotyczy rezerwacji składanych przez klientów</mat-hint>
+      @if (form.get('clientMinLeadTimeMinutes')?.invalid) {
+        <mat-error>Podaj wartość od 0 do 10080</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Rezerwacje na ile dni naprzód</mat-label>
+      <input matInput type="number" formControlName="maxBookingDaysAhead" />
+      @if (form.get('maxBookingDaysAhead')?.invalid) {
+        <mat-error>Podaj wartość od 1 do 365</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Odstęp między slotami</mat-label>
+      <mat-select formControlName="slotIntervalMinutes">
+        @for (interval of SLOT_INTERVALS; track interval) {
+          <mat-option [value]="interval">{{ interval }} min</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Anulowanie przez klienta do (godz. przed wizytą)</mat-label>
+      <input matInput type="number" formControlName="clientCancellationDeadlineHours" />
+      @if (form.get('clientCancellationDeadlineHours')?.invalid) {
+        <mat-error>Podaj wartość od 0 do 720</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <mat-slide-toggle formControlName="autoConfirmClientBookings" class="mt-2">
+    Automatycznie potwierdzaj rezerwacje klientów
+  </mat-slide-toggle>
+
+  <div class="flex gap-2 mt-4">
+    <button
+      *hasPermission="{ resource: 'settings', action: 'write' }"
+      mat-flat-button
+      [disabled]="$isLoading() || form.pristine"
+      (click)="sendForm($event)"
+    >
+      Zapisz zmiany
+    </button>
+  </div>
+</form>
