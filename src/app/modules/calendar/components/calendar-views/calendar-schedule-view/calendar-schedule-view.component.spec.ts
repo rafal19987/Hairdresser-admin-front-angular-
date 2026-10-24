@@ -14,6 +14,8 @@ describe('CalendarScheduleViewComponent', () => {
 
     fixture = TestBed.createComponent(CalendarScheduleViewComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('date', new Date());
+    fixture.componentRef.setInput('events', []);
     fixture.detectChanges();
   });
 

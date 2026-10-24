@@ -14,6 +14,8 @@ describe('CalendarMonthViewComponent', () => {
 
     fixture = TestBed.createComponent(CalendarMonthViewComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('date', new Date());
+    fixture.componentRef.setInput('events', []);
     fixture.detectChanges();
   });
 

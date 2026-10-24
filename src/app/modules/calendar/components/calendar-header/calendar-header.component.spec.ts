@@ -14,6 +14,8 @@ describe('CalendarHeaderComponent', () => {
 
     fixture = TestBed.createComponent(CalendarHeaderComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('currentDate', new Date());
+    fixture.componentRef.setInput('currentView', 'month');
     fixture.detectChanges();
   });
 
