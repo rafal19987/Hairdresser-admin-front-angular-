@@ -1,0 +1,74 @@
+@use '@angular/material' as mat;
+
+// Same look as the salon website: black surfaces, gold accent, square corners,
+// Exo for headings and Roboto Condensed for text
+html {
+  color-scheme: dark;
+
+  @include mat.theme((
+    color: (
+      primary: mat.$orange-palette,
+      tertiary: mat.$yellow-palette,
+      theme-type: dark,
+    ),
+    typography: (
+      plain-family: 'Roboto Condensed, sans-serif',
+      brand-family: 'Exo, sans-serif',
+    ),
+    density: 0,
+  ));
+
+  @include mat.theme-overrides((
+    primary: #c59d5f,
+    on-primary: #000000,
+    primary-container: #3b2f1d,
+    on-primary-container: #f3e3c6,
+    secondary: #bebebe,
+    on-secondary: #000000,
+    secondary-container: #2a2a2a,
+    on-secondary-container: #ffffff,
+    error: #f87171,
+    on-error: #000000,
+    background: #000000,
+    on-background: #ffffff,
+    surface: #0d0d0d,
+    on-surface: #ffffff,
+    on-surface-variant: #bebebe,
+    surface-variant: #1f1f1f,
+    surface-container-lowest: #000000,
+    surface-container-low: #0d0d0d,
+    surface-container: #141414,
+    surface-container-high: #1a1a1a,
+    surface-container-highest: #222222,
+    inverse-surface: #f3e3c6,
+    inverse-on-surface: #000000,
+    outline: #6f5c3d,
+    outline-variant: #2e2618,
+    corner-extra-small: 0,
+    corner-small: 0,
+    corner-medium: 0,
+    corner-large: 0,
+    corner-extra-large: 0,
+    corner-full: 0,
+  ));
+}
+
+// Inputs like on the website: no filled box, a thin gold underline that brightens on focus
+html {
+  @include mat.form-field-overrides((
+    filled-container-color: transparent,
+    filled-disabled-container-color: transparent,
+    filled-active-indicator-color: rgb(197 157 95 / 30%),
+    filled-hover-active-indicator-color: rgb(197 157 95 / 60%),
+    filled-focus-active-indicator-color: #c59d5f,
+    filled-label-text-color: #adadad,
+    filled-hover-label-text-color: #bebebe,
+    filled-focus-label-text-color: #c59d5f,
+    filled-caret-color: #c59d5f,
+  ));
+}
+
+// Material's state layer would paint the transparent fill grey on hover
+.mat-mdc-form-field-focus-overlay {
+  display: none;
+}

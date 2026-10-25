@@ -3,14 +3,14 @@
     <div class="flex items-center gap-2" [formGroup]="range">
       <input
         type="time"
-        class="border rounded px-2 py-1"
+        class="border px-2 py-1"
         formControlName="opensAt"
         aria-label="Godzina otwarcia"
       />
-      <span class="text-gray-400">–</span>
+      <span class="text-muted/70">–</span>
       <input
         type="time"
-        class="border rounded px-2 py-1"
+        class="border px-2 py-1"
         formControlName="closesAt"
         aria-label="Godzina zamknięcia"
       />
@@ -26,19 +26,19 @@
       }
     </div>
     @if (range.hasError('timeRangeOrder')) {
-      <span class="text-xs text-red-600">
+      <span class="text-xs text-red-400">
         Godzina zamknięcia musi być późniejsza niż otwarcia
       </span>
     }
     @if (range.get('opensAt')?.hasError('required') || range.get('closesAt')?.hasError('required')) {
-      <span class="text-xs text-red-600">Podaj obie godziny</span>
+      <span class="text-xs text-red-400">Podaj obie godziny</span>
     }
   } @empty {
-    <span class="text-sm text-gray-400 py-1">{{ emptyLabel() }}</span>
+    <span class="text-sm text-muted/70 py-1">{{ emptyLabel() }}</span>
   }
 
   @if (ranges().hasError('timeRangeOverlap')) {
-    <span class="text-xs text-red-600">Przedziały nachodzą na siebie</span>
+    <span class="text-xs text-red-400">Przedziały nachodzą na siebie</span>
   }
 
   @if (ranges().enabled) {

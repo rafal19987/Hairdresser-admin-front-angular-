@@ -14,6 +14,7 @@ import {DrawerContainerComponent} from '@/app/layout/drawer-container/drawer-con
 @Component({
   selector: 'dashboard-layout',
   templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
   standalone: true,
   imports: [
     MatSidenavModule,

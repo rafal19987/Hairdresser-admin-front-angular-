@@ -10,21 +10,21 @@
   </div>
 
   <table
-    class="table-auto w-full border-collapse border border-gray-200"
+    class="table-auto w-full border-collapse border border-line"
   >
     <thead>
-    <tr class="bg-gray-100">
-      <th class="border border-gray-200 px-4 py-2 text-left">Nazwa</th>
-      <th class="border border-gray-200 px-4 py-2 text-left">Akcje</th>
+    <tr class="bg-surface-sunken">
+      <th class="border border-line px-4 py-2 text-left">Nazwa</th>
+      <th class="border border-line px-4 py-2 text-left">Akcje</th>
     </tr>
     </thead>
     <tbody>
       @if (roles?.length) {
         @for (role of roles; track role.uuid)
         {
-          <tr class="even:bg-slate-100">
-            <td class="border border-gray-200 px-4 py-2">{{ role.displayName }}</td>
-            <td class="border border-gray-200 px-4 py-2 text-center">
+          <tr class="even:bg-surface-raised">
+            <td class="border border-line px-4 py-2">{{ role.displayName }}</td>
+            <td class="border border-line px-4 py-2 text-center">
               <button mat-icon-button [matMenuTriggerFor]="menu">
                 <mat-icon>more_vert</mat-icon>
               </button>
@@ -42,7 +42,7 @@
           </tr>
         }
       } @else {
-        <td class="border border-gray-200 px-4 py-2">Brak ról do wyświetlenia</td>
+        <td class="border border-line px-4 py-2">Brak ról do wyświetlenia</td>
       }
     </tbody>
   </table>

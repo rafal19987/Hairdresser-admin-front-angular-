@@ -24,7 +24,7 @@
 
   <div class="w-full overflow-x-auto">
     <table class="w-full text-sm text-left">
-      <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+      <thead class="bg-surface-sunken text-silver uppercase text-xs">
       <tr>
         <th class="px-4 py-3">Pracownik</th>
         <th class="px-4 py-3">Usługa</th>
@@ -37,14 +37,14 @@
       <tbody>
         @if ($usersServices() && $usersServices()!.length > 0) {
           @for (item of $usersServices(); track item.uuid) {
-            <tr class="border-b hover:bg-gray-50">
+            <tr class="border-b hover:bg-surface-raised">
               <td class="px-4 py-3">
                 {{ item.user.firstName }} {{ item.user.lastName }}
-                <div class="text-xs text-gray-400">{{ item.user.email }}</div>
+                <div class="text-xs text-muted/70">{{ item.user.email }}</div>
               </td>
               <td class="px-4 py-3">
                 {{ item.service.name }}
-                <div class="text-xs text-gray-400">{{ item.service.description }}</div>
+                <div class="text-xs text-muted/70">{{ item.service.description }}</div>
               </td>
               <td class="px-4 py-3 font-medium">
                 {{ item.price | number: '1.2-2' }} zł
@@ -54,11 +54,11 @@
               </td>
               <td class="px-4 py-3">
                 @if (item.active) {
-                  <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">
+                  <span class="px-2 py-1 bg-emerald-500/15 text-emerald-300 rounded-full text-xs">
                     Aktywne
                   </span>
                 } @else {
-                  <span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs">
+                  <span class="px-2 py-1 bg-red-500/15 text-red-300 rounded-full text-xs">
                     Nieaktywne
                   </span>
                 }
@@ -86,7 +86,7 @@
           }
         } @else {
           <tr>
-            <td colspan="6" class="px-4 py-8 text-center text-gray-400">
+            <td colspan="6" class="px-4 py-8 text-center text-muted/70">
               Brak przypisanych usług
             </td>
           </tr>

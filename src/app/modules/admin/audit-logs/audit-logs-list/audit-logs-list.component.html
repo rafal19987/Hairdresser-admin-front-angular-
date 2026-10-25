@@ -49,7 +49,7 @@
 
   <div class="w-full overflow-x-auto">
     <table class="w-full text-sm text-left">
-      <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+      <thead class="bg-surface-sunken text-silver uppercase text-xs">
         <tr>
           <th class="px-4 py-3">Data</th>
           <th class="px-4 py-3">Akcja</th>
@@ -61,7 +61,7 @@
       <tbody>
         @for (entry of $entries(); track entry.uuid) {
           <tr
-            class="border-b hover:bg-gray-50 cursor-pointer"
+            class="border-b hover:bg-surface-raised cursor-pointer"
             tabindex="0"
             (click)="openDetails(entry)"
             (keydown.enter)="openDetails(entry)"
@@ -70,23 +70,23 @@
               {{ entry.occurredAt | date: 'd MMM y, HH:mm:ss' : '' : 'pl' }}
             </td>
             <td class="px-4 py-3">
-              <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs whitespace-nowrap">
+              <span class="px-2 py-1 bg-surface-sunken text-silver rounded-full text-xs whitespace-nowrap">
                 {{ actionLabel(entry.action) }}
               </span>
             </td>
             <td class="px-4 py-3">
               <div class="font-medium">{{ entry.actorLabel || '—' }}</div>
-              <div class="text-xs text-gray-400">{{ actorLabel(entry.actorType) }}</div>
+              <div class="text-xs text-muted/70">{{ actorLabel(entry.actorType) }}</div>
             </td>
             <td class="px-4 py-3">
               <div>{{ entityLabel(entry.entityType) }}</div>
-              <div class="text-xs text-gray-400 font-mono">{{ entry.entityId?.slice(0, 8) }}</div>
+              <div class="text-xs text-muted/70 font-mono">{{ entry.entityId?.slice(0, 8) }}</div>
             </td>
-            <td class="px-4 py-3 text-gray-500 font-mono text-xs">{{ entry.ipAddress || '—' }}</td>
+            <td class="px-4 py-3 text-muted font-mono text-xs">{{ entry.ipAddress || '—' }}</td>
           </tr>
         } @empty {
           <tr>
-            <td colspan="5" class="px-4 py-6 text-center text-gray-400">
+            <td colspan="5" class="px-4 py-6 text-center text-muted/70">
               {{ $isLoading() ? 'Ładowanie...' : 'Brak wpisów dla wybranych filtrów' }}
             </td>
           </tr>
