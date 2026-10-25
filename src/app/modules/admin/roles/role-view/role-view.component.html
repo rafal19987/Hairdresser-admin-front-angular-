@@ -27,7 +27,7 @@
           @for (user of $usersWithRole(); track $index) {
             <li>
               <a [routerLink]="['../../', 'users', user.uuid]"
-                 class="underline hover:text-blue-800"
+                 class="underline hover:text-gold-light"
               >
                 {{ user.username }}
               </a>

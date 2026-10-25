@@ -24,7 +24,7 @@
 
   <div class="w-full overflow-x-auto">
     <table class="w-full text-sm text-left">
-      <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+      <thead class="bg-surface-sunken text-silver uppercase text-xs">
       <tr>
         <th class="px-4 py-3">Nazwa</th>
         <th class="px-4 py-3">Opis</th>
@@ -35,16 +35,16 @@
       <tbody>
         @if ($services() && $services()!.length > 0) {
           @for (service of $services(); track service.uuid) {
-            <tr class="border-b hover:bg-gray-50">
+            <tr class="border-b hover:bg-surface-raised">
               <td class="px-4 py-3 font-medium">{{ service.name }}</td>
-              <td class="px-4 py-3 text-gray-500">{{ service.description }}</td>
+              <td class="px-4 py-3 text-muted">{{ service.description }}</td>
               <td class="px-4 py-3">
                 @if (service.active) {
-                  <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">
+                  <span class="px-2 py-1 bg-emerald-500/15 text-emerald-300 rounded-full text-xs">
                     Aktywna
                   </span>
                 } @else {
-                  <span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs">
+                  <span class="px-2 py-1 bg-red-500/15 text-red-300 rounded-full text-xs">
                     Nieaktywna
                   </span>
                 }
@@ -72,7 +72,7 @@
           }
         } @else {
           <tr>
-            <td colspan="4" class="px-4 py-8 text-center text-gray-400">
+            <td colspan="4" class="px-4 py-8 text-center text-muted/70">
               Brak usług
             </td>
           </tr>

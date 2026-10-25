@@ -1,0 +1,43 @@
+<mat-sidenav-container
+  class="h-full"
+  [class.drawer-fullscreen]="$mode() === 'fullscreen'"
+  autosize
+>
+  <mat-sidenav
+    class="app-drawer"
+    position="end"
+    [mode]="$mode() === 'side' ? 'side' : 'over'"
+    [fixedInViewport]="$mode() === 'fullscreen'"
+    [opened]="drawer.$isOpen()"
+    [style.width]="$width()"
+    (closedStart)="drawer.close()"
+    (closed)="drawer.$isOpen() || $content.set(null)"
+  >
+    @if ($content(); as request) {
+      <div class="flex h-full flex-col">
+        <header class="flex items-center justify-between gap-2 border-b px-4 py-2">
+          <h2 class="truncate text-lg font-semibold text-white">
+            {{ request.title }}
+          </h2>
+          <button
+            mat-icon-button
+            type="button"
+            aria-label="Zamknij"
+            (click)="drawer.close()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </header>
+        <div class="min-h-0 flex-1 overflow-y-auto">
+          <ng-container
+            *ngComponentOutlet="request.component; inputs: request.inputs"
+          />
+        </div>
+      </div>
+    }
+  </mat-sidenav>
+
+  <mat-sidenav-content class="p-4">
+    <ng-content />
+  </mat-sidenav-content>
+</mat-sidenav-container>

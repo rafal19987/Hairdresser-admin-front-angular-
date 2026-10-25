@@ -1,0 +1,28 @@
+// Black work area and a dark drawer edged in gold, like the website
+:host {
+  --mat-sidenav-content-background-color: #000000;
+  --mat-sidenav-content-text-color: #ffffff;
+  --mat-sidenav-container-background-color: #0d0d0d;
+  --mat-sidenav-container-text-color: #ffffff;
+  --mat-sidenav-container-shape: 0;
+  --mat-sidenav-container-elevation-shadow: -1px 0 0 rgb(197 157 95 / 25%);
+}
+
+// Over the work area the backdrop only dims it, the navigation stays usable
+:host ::ng-deep .mat-drawer-backdrop.mat-drawer-shown {
+  background-color: rgb(0 0 0 / 55%);
+}
+
+// Too narrow for a drawer beside the content: cover the whole screen
+:host ::ng-deep .drawer-fullscreen {
+  .mat-drawer-backdrop.mat-drawer-shown {
+    position: fixed;
+    z-index: 1000;
+    background-color: rgb(0 0 0 / 70%);
+    backdrop-filter: blur(4px);
+  }
+
+  .app-drawer {
+    z-index: 1001;
+  }
+}

@@ -1,8 +1,9 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, output, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from '@angular/cdk/drag-drop';
+import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList, CdkDropListGroup} from '@angular/cdk/drag-drop';
+import {dropTimeFor, grabOffset} from '@/app/core/calendar/calendar-drop';
 import {CalendarEvent} from '@/app/core/calendar/calendar.types';
-import {addDays, format, getDate, isSameDay, isToday, set, startOfWeek} from 'date-fns';
+import {addDays, format, getDate, isSameDay, isToday, startOfWeek} from 'date-fns';
 import {pl} from 'date-fns/locale';
 import {CalendarEventPositioningService, PositionedEvent} from '@/app/core/calendar/calendar-event-positioning.service';
 
@@ -15,7 +16,7 @@ interface WeekDay {
 
 @Component({
   selector: 'app-calendar-week-view',
-  imports: [CommonModule, CdkDrag, CdkDropList, CdkDragPreview],
+  imports: [CommonModule, CdkDrag, CdkDropList, CdkDropListGroup, CdkDragPreview],
   templateUrl: './calendar-week-view.component.html',
   styleUrl: './calendar-week-view.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -28,6 +29,7 @@ export class CalendarWeekViewComponent {
   eventDrop = output<{ eventId: string; newDate: Date }>();
 
   private readonly positioning = inject(CalendarEventPositioningService);
+  private _grabOffset = 0;
 
   timeSlots = signal(
     Array.from({ length: 24 }, (_, i) =>
@@ -60,38 +62,17 @@ export class CalendarWeekViewComponent {
     );
   }
 
-  onEventDrop(cdkEvent: CdkDragDrop<Date>, date: Date): void {
-    const droppedEvent = cdkEvent.item.data as CalendarEvent;
-    const dropY = cdkEvent.dropPoint.y;
+  onEventPointerDown(event: PointerEvent): void {
+    this._grabOffset = grabOffset(event);
+  }
 
-    // Calculate new date/time from drop position
-    const newDateTime = this.calculateDropDateTime(dropY, date);
+  // Day columns are connected, so the target column decides the day
+  onEventDrop(cdkEvent: CdkDragDrop<Date>): void {
+    const droppedEvent = cdkEvent.item.data as CalendarEvent;
 
     this.eventDrop.emit({
       eventId: droppedEvent.id,
-      newDate: newDateTime
-    });
-  }
-
-  private calculateDropDateTime(dropY: number, date: Date): Date {
-    const HOUR_HEIGHT = 60; // 60px per hour
-    const SNAP_MINUTES = 15; // Snap to 15min intervals
-
-    // Get container offset (header + day header height ~120px)
-    const HEADER_OFFSET = 120;
-    const relativeY = dropY - HEADER_OFFSET;
-
-    // Calculate hours and minutes
-    const totalMinutes = Math.max(0, (relativeY / HOUR_HEIGHT) * 60);
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = Math.floor((totalMinutes % 60) / SNAP_MINUTES) * SNAP_MINUTES;
-
-    // Set time on the date
-    return set(date, {
-      hours: Math.min(23, hours),
-      minutes,
-      seconds: 0,
-      milliseconds: 0
+      newDate: dropTimeFor(cdkEvent, this._grabOffset)
     });
   }
 

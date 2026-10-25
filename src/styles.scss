@@ -3,5 +3,65 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: Exo;
+  src: url('/fonts/ExoVF.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  src: url('/fonts/RobotoCondensedVF.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+body {
+  margin: 0;
+  font-family: 'Roboto Condensed', sans-serif;
+  background: #000000;
+  color: #ffffff;
+}
+
+h1, h2, h3 {
+  font-family: Exo, sans-serif;
+}
+
+::selection {
+  background: rgb(197 157 95 / 40%);
+}
+
+// Dark scrollbars, so scrolled panels do not flash light bars
+* {
+  scrollbar-color: #3a3a3a transparent;
+}
+
+// Online bookings waiting for the salon to confirm them
+.event-pending {
+  outline: 2px dashed #f59e0b;
+  outline-offset: -2px;
+}
+
+// Plain inputs outside Material: Flowbite would paint them white with a blue focus ring
+input:not(.mat-mdc-input-element):not([type='checkbox']):not([type='radio']),
+select:not(.mat-mdc-select),
+textarea:not(.mat-mdc-input-element) {
+  background-color: transparent;
+  color: #ffffff;
+  border-color: rgb(197 157 95 / 30%);
+  border-radius: 0;
+  color-scheme: dark;
+
+  &::placeholder {
+    color: #adadad;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #c59d5f;
+    box-shadow: 0 0 0 1px #c59d5f;
+  }
+}

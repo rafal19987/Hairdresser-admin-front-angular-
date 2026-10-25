@@ -1,6 +1,6 @@
 import {inject, Injectable, Signal} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {BehaviorSubject, Observable, tap} from 'rxjs';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {BehaviorSubject, map, Observable, tap} from 'rxjs';
 import {ApiResponse, CountedAndPaginatedList} from '@/app/shared/interface/response/response.types';
 import {environment} from '@/environments/environment';
 import {Pagination} from '@/app/shared/interface/pagination.types';
@@ -67,6 +67,24 @@ export class AppointmentService {
           }
         }),
       );
+  }
+
+  // Appointments overlapping [from, to) from the given visible calendars
+  public getInRange(
+    from: Date,
+    to: Date,
+    calendarUuids: string[],
+  ): Observable<Appointment[]> {
+    const params = new HttpParams()
+      .set('from', from.toISOString())
+      .set('to', to.toISOString())
+      .set('calendarIds', calendarUuids.join(','));
+
+    return this._httpClient
+      .get<ApiResponse>(environment.API_URL + '/api/appointments/range', {
+        params,
+      })
+      .pipe(map((res) => res.data as Appointment[]));
   }
 
   public getById(uuid: string): Observable<ApiResponse> {

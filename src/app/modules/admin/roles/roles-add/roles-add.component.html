@@ -42,9 +42,9 @@
       </mat-form-field>
     </div>
 
-    <div class="permissions-section bg-white p-6 rounded-lg shadow-sm border">
-      <h3 class="text-xl font-semibold mb-4 text-gray-800">Uprawnienia do zasobów</h3>
-      <p class="text-sm text-gray-600 mb-6">
+    <div class="permissions-section bg-surface p-6 shadow-sm border">
+      <h3 class="text-xl font-semibold mb-4 text-white">Uprawnienia do zasobów</h3>
+      <p class="text-sm text-silver mb-6">
         Wybierz uprawnienia dla każdego zasobu.
         <strong>"All"</strong> oznacza wszystkie podstawowe operacje (CRUD),
         <strong>"Admin"</strong> oznacza wszystkie operacje + uprawnienia administracyjne.
@@ -52,19 +52,19 @@
 
       <div formArrayName="permissions" class="permissions-grid space-y-6">
         @for (permissionGroup of permissionsFormArray.controls; track $index; let i = $index) {
-          <div [formGroupName]="i" class="permission-card border rounded-lg p-5 bg-gray-50 hover:bg-gray-100 transition-colors">
+          <div [formGroupName]="i" class="permission-card border p-5 bg-surface-sunken hover:bg-surface-raised transition-colors">
             <div class="flex items-center justify-between mb-4">
-              <h4 class="font-semibold text-lg capitalize text-gray-700">
+              <h4 class="font-semibold text-lg capitalize text-silver">
                 🔒 {{ getResourceName(i) }}
               </h4>
 
-              <div class="text-sm text-blue-600 font-medium">
+              <div class="text-sm text-gold font-medium">
                 @if (hasAnyPermissions(i)) {
-                  <span class="bg-blue-100 px-2 py-1 rounded">
+                  <span class="bg-gold/15 px-2 py-1">
                       {{ _getSelectedActionsPreview(i) }}
                     </span>
                 } @else {
-                  <span class="text-gray-400">Brak uprawnień</span>
+                  <span class="text-muted/70">Brak uprawnień</span>
                 }
               </div>
             </div>
@@ -81,7 +81,7 @@
                   >
                     <div class="flex flex-col">
                       <span class="capitalize font-medium">{{ getActionName(j) }}</span>
-                      <span class="text-xs text-gray-500">
+                      <span class="text-xs text-muted">
                           {{ _getActionDescription(getActionName(j)) }}
                         </span>
                     </div>
@@ -91,9 +91,9 @@
             </div>
 
             @if (hasAnyPermissions(i)) {
-              <div class="mt-4 p-3 bg-blue-50 rounded border-l-4 border-blue-200">
-                <p class="text-sm font-medium text-blue-800 mb-1">Przypisane akcje:</p>
-                <div class="text-sm text-blue-700">
+              <div class="mt-4 p-3 bg-sky-500/10 border-l-4 border-sky-400/30">
+                <p class="text-sm font-medium text-gold-light mb-1">Przypisane akcje:</p>
+                <div class="text-sm text-gold">
                   {{ _getActualPermissions(i).join(', ') }}
                 </div>
               </div>

@@ -38,6 +38,7 @@ export class CalendarStateService {
   filters = computed(() => this.state().filters);
   loading = computed(() => this.state().loading);
   error = computed(() => this.state().error);
+  visibleCalendars = computed(() => this.state().visibleCalendars);
 
   filteredEvents = computed(() => {
     const s = this.state();
@@ -78,6 +79,23 @@ export class CalendarStateService {
 
   selectDate(date: Date | null): void {
     this.state.update(s => ({ ...s, selectedDate: date }));
+  }
+
+  // Replaces everything, so events from a previous range or calendar set do not linger
+  setEvents(events: CalendarEvent[]): void {
+    this.state.update(s => ({
+      ...s,
+      events: new Map(events.map(event => [event.id, event])),
+      selectedEvent: null,
+    }));
+  }
+
+  setVisibleCalendars(calendarUuids: string[]): void {
+    this.state.update(s => ({ ...s, visibleCalendars: new Set(calendarUuids) }));
+  }
+
+  visibleCalendarUuids(): string[] {
+    return [...this.state().visibleCalendars];
   }
 
   addEvent(event: CalendarEvent): void {
@@ -140,9 +158,10 @@ export class CalendarStateService {
   getDateRangeForView(date: Date, view: CalendarView): CalendarDateRange {
     switch (view) {
       case 'month':
+        // Whole weeks, so days of neighbouring months shown in the grid get their events too
         return {
-          start: startOfMonth(date),
-          end: endOfMonth(date)
+          start: startOfWeek(startOfMonth(date), { weekStartsOn: 1 }),
+          end: endOfWeek(endOfMonth(date), { weekStartsOn: 1 })
         };
       case 'week':
         return {
