@@ -34,7 +34,7 @@
 
   <!-- Week grid (time slots + days) -->
   <div class="flex-1 overflow-auto">
-    <div class="grid grid-cols-[60px_repeat(7,1fr)] relative">
+    <div class="grid grid-cols-[60px_repeat(7,1fr)] relative" cdkDropListGroup>
 
       <!-- Time labels column -->
       <div class="border-r border-gray-200">
@@ -50,8 +50,9 @@
         <div
           class="relative border-l border-gray-200"
           cdkDropList
+          cdkDropListSortingDisabled
           [cdkDropListData]="day.date"
-          (cdkDropListDropped)="onEventDrop($event, day.date)"
+          (cdkDropListDropped)="onEventDrop($event)"
         >
           <!-- Hour lines (background grid) -->
           @for (slot of timeSlots(); track trackBySlot($index, slot)) {
@@ -71,16 +72,21 @@
                   zIndex: evt.style.zIndex,
                   background: evt.event.color
                 }"
+                [class.opacity-50]="evt.event.status === 'cancelled'"
+                [class.event-pending]="evt.event.status === 'pending'"
                 cdkDrag
                 [cdkDragData]="evt.event"
+                [cdkDragDisabled]="evt.event.status === 'cancelled' || evt.event.status === 'completed'"
+                (pointerdown)="onEventPointerDown($event)"
                 (click)="eventClick.emit(evt.event)"
               >
                 <div class="p-1 text-white">
-                  <div class="text-xs font-semibold truncate">
+                  <div class="text-xs font-semibold truncate" [class.line-through]="evt.event.status === 'cancelled'">
                     {{ evt.event.title }}
                   </div>
-                  <div class="text-[10px] opacity-90">
+                  <div class="text-[10px] opacity-90 truncate">
                     {{ evt.event.scheduleAt | date:'HH:mm' }}
+                    @if (evt.event.subtitle) { · {{ evt.event.subtitle }} }
                   </div>
                 </div>
 

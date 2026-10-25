@@ -1,10 +1,12 @@
 export interface Appointment {
   uuid: string;
   name: string;
+  type: AppointmentType;
   status: AppointmentStatus;
   price: number;
   duration: number;
   note?: string;
+  clientName?: string;
   clientEmail?: string;
   clientPhone?: string;
   scheduledAt: string;
@@ -23,6 +25,18 @@ export interface Appointment {
   client?: AppointmentClient;
   userService?: AppointmentUserService;
   createdBy?: AppointmentCreatedBy;
+  overlaps?: AppointmentOverlap[];
+}
+
+export type AppointmentType = 'client' | 'internal';
+
+export interface AppointmentOverlap {
+  uuid: string;
+  name: string;
+  type: AppointmentType;
+  status: AppointmentStatus;
+  scheduledAt: string;
+  scheduledEndAt: string;
 }
 
 export type AppointmentStatus =
