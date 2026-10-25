@@ -18,15 +18,35 @@ export interface Calendar {
   lastModifiedAt?: Date;
 }
 
+export type CalendarAccess = 'owner' | 'shared' | 'all';
+
+// Calendar the current user may see, with the employee it belongs to
+export interface VisibleCalendar {
+  uuid: string;
+  name: string;
+  color: string | null;
+  isDefault: boolean;
+  access: CalendarAccess;
+  permission: string;
+  owner: {
+    uuid: string;
+    firstName: string;
+    lastName: string;
+  };
+}
+
 export interface CalendarEvent {
   id: string;
   title: string;
+  subtitle?: string;
   scheduleAt: Date;
   scheduleEndAt: Date;
   type: EventType;
   color: string;
   userId: string;
   userName?: string;
+  ownerId?: string;
+  isInternal?: boolean;
   appointmentUuid?: string;
   calendarUuid?: string;
   status?: AppointmentStatus;

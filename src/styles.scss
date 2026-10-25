@@ -5,3 +5,9 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// Online bookings waiting for the salon to confirm them
+.event-pending {
+  outline: 2px dashed #f59e0b;
+  outline-offset: -2px;
+}

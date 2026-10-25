@@ -9,6 +9,7 @@ import {catchError} from 'rxjs/operators';
 import {EMPTY} from 'rxjs';
 import {AuthService} from '@/app/core/auth/auth.service';
 import {HasPermissionDirective} from '@/app/shared/directive/has-permission.directive';
+import {DrawerContainerComponent} from '@/app/layout/drawer-container/drawer-container.component';
 
 @Component({
   selector: 'dashboard-layout',
@@ -22,6 +23,7 @@ import {HasPermissionDirective} from '@/app/shared/directive/has-permission.dire
     MatButtonModule,
     RouterModule,
     HasPermissionDirective,
+    DrawerContainerComponent,
 ],
 })
 export class DashboardComponent {
