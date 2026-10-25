@@ -7,7 +7,7 @@
 
         <a
         routerLink="/dashboard/users-services"
-        class="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1 mb-1"
+        class="text-sm text-muted/70 hover:text-silver flex items-center gap-1 mb-1"
         >
         ← Wróć do listy
         </a>
@@ -24,40 +24,40 @@
     </div>
 
     <!-- Informacje o pracowniku -->
-    <div class="bg-white rounded-lg border p-4 mb-4">
-      <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Pracownik</h3>
+    <div class="bg-surface border p-4 mb-4">
+      <h3 class="text-sm font-semibold text-muted uppercase mb-3">Pracownik</h3>
       <div class="grid grid-cols-2 gap-2 text-sm">
         <div>
-          <span class="text-gray-400">Imię i nazwisko</span>
+          <span class="text-muted/70">Imię i nazwisko</span>
           <p class="font-medium">
             {{ $userService()!.user.firstName }} {{ $userService()!.user.lastName }}
           </p>
         </div>
         <div>
-          <span class="text-gray-400">Email</span>
+          <span class="text-muted/70">Email</span>
           <p class="font-medium">{{ $userService()!.user.email }}</p>
         </div>
       </div>
     </div>
 
     <!-- Informacje o usłudze -->
-    <div class="bg-white rounded-lg border p-4 mb-4">
-      <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Usługa</h3>
+    <div class="bg-surface border p-4 mb-4">
+      <h3 class="text-sm font-semibold text-muted uppercase mb-3">Usługa</h3>
       <div class="grid grid-cols-2 gap-2 text-sm">
         <div>
-          <span class="text-gray-400">Nazwa</span>
+          <span class="text-muted/70">Nazwa</span>
           <p class="font-medium">{{ $userService()!.service.name }}</p>
         </div>
         <div>
-          <span class="text-gray-400">Opis</span>
+          <span class="text-muted/70">Opis</span>
           <p class="font-medium">{{ $userService()!.service.description }}</p>
         </div>
       </div>
     </div>
 
     <!-- Formularz edycji -->
-    <div class="bg-white rounded-lg border p-4">
-      <h3 class="text-sm font-semibold text-gray-500 uppercase mb-4">Edytuj przypisanie</h3>
+    <div class="bg-surface border p-4">
+      <h3 class="text-sm font-semibold text-muted uppercase mb-4">Edytuj przypisanie</h3>
 
       @if (form) {
         <form

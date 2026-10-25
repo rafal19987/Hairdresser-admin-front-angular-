@@ -1,23 +1,31 @@
-<div class="flex h-dvh overflow-hidden bg-gray-100">
+<div class="flex h-dvh overflow-hidden bg-surface-sunken">
   <!-- Sidebar -->
   <aside
-    class="w-64 shrink-0 overflow-y-auto bg-white shadow-md h-full flex flex-col transition-all"
+    class="w-64 shrink-0 overflow-y-auto bg-black border-r border-line h-full flex flex-col transition-all"
     [class.hidden]="!isSidebarOpen"
   >
-    <div class="p-4 border-b">
-      <h2 class="text-lg font-bold text-gray-800">Menu</h2>
+    <div class="px-6 pt-6 pb-8">
+      <a
+        routerLink="/dashboard"
+        class="font-exo text-3xl font-bold leading-none text-white transition-colors duration-150 hover:text-gold"
+      >
+        Rêve
+      </a>
+      <p class="mt-2 text-sm uppercase tracking-widest text-muted">Panel salonu</p>
     </div>
-    <nav class="flex-1 p-4 space-y-4">
+    <nav class="flex flex-1 flex-col gap-1 px-6 pb-6">
       <!-- Użytkownicy z podmenu -->
       <div>
         <button
-          class="flex items-center justify-between w-full text-left py-2 px-4 rounded hover:bg-gray-200"
+          type="button"
+          class="nav-link flex items-center justify-between w-full text-left"
+          [attr.aria-expanded]="isUsersSubmenuOpen"
           (click)="toggleUsersSubmenu()"
         >
           <span>Użytkownicy</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 transition-transform"
+            class="h-5 w-5 text-gold transition-transform"
             [class.rotate-180]="isUsersSubmenuOpen"
             fill="none"
             viewBox="0 0 24 24"
@@ -32,18 +40,19 @@
           </svg>
         </button>
         @if (isUsersSubmenuOpen) {
-          <div class="ml-4 mt-2 space-y-2">
+          <div class="ml-4 flex flex-col border-l border-line pl-3">
             <a
               routerLink="/dashboard/users"
-              routerLinkActive="bg-gray-200 text-gray-800"
-              class="block py-2 px-4 rounded hover:bg-gray-200"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="nav-link nav-link--sub"
             >
               Lista użytkowników
             </a>
             <a
               routerLink="/dashboard/users/add"
-              routerLinkActive="bg-gray-200 text-gray-800"
-              class="block py-2 px-4 rounded hover:bg-gray-200"
+              routerLinkActive="active"
+              class="nav-link nav-link--sub"
             >
               Utwórz użytkownika
             </a>
@@ -51,70 +60,37 @@
         }
       </div>
 
-      <a
-        routerLink="/dashboard/roles"
-        routerLinkActive="bg-gray-200 text-gray-800"
-        class="block py-2 px-4 rounded hover:bg-gray-200"
-      >
-        Role
-      </a>
-
-      <a
-        routerLink="/dashboard/services"
-        routerLinkActive="bg-gray-200 text-gray-800"
-        class="block py-2 px-4 rounded hover:bg-gray-200"
-      >
-        Usługi
-      </a>
-
-      <a
-        routerLink="/dashboard/users-services"
-        routerLinkActive="bg-gray-200 text-gray-800"
-        class="block py-2 px-4 rounded hover:bg-gray-200"
-      >
-        Przypisania usług
-      </a>
-
-      <a
-        routerLink="/dashboard/calendar"
-        routerLinkActive="bg-gray-200 text-gray-800"
-        class="block py-2 px-4 rounded hover:bg-gray-200"
-      >
-        Kalendarz
-      </a>
-
+      <a routerLink="/dashboard/roles" routerLinkActive="active" class="nav-link">Role</a>
+      <a routerLink="/dashboard/services" routerLinkActive="active" class="nav-link">Usługi</a>
+      <a routerLink="/dashboard/users-services" routerLinkActive="active" class="nav-link">Przypisania usług</a>
+      <a routerLink="/dashboard/calendar" routerLinkActive="active" class="nav-link">Kalendarz</a>
       <a
         *hasPermission="{ resource: 'audit-logs', action: 'read' }"
         routerLink="/dashboard/audit-logs"
-        routerLinkActive="bg-gray-200 text-gray-800"
-        class="block py-2 px-4 rounded hover:bg-gray-200"
+        routerLinkActive="active"
+        class="nav-link"
       >
         Logi zdarzeń
       </a>
+      <a routerLink="/dashboard/settings" routerLinkActive="active" class="nav-link">Ustawienia</a>
 
-      <a
-        routerLink="/dashboard/settings"
-        routerLinkActive="bg-gray-200 text-gray-800"
-        class="block py-2 px-4 rounded hover:bg-gray-200"
-      >
-        Ustawienia
-      </a>
-
-      <!-- Logout -->
       <button
+        type="button"
         (click)="logout()"
-        class="w-full text-left py-2 px-4 rounded hover:bg-gray-200"
+        class="nav-link mt-auto text-left"
       >
-        Logout
+        Wyloguj się
       </button>
     </nav>
   </aside>
 
   <!-- Main Content -->
   <main class="flex min-w-0 flex-1 flex-col">
-    <header class="bg-white shadow px-4 py-2 flex items-center">
+    <header class="bg-black border-b border-line px-4 py-3 flex items-center">
       <button
-        class="mr-4 text-gray-800 focus:outline-none hover:bg-slate-200 transition-colors duration-300 rounded-lg p-2"
+        type="button"
+        aria-label="Pokaż lub ukryj menu"
+        class="mr-4 text-gold focus:outline-none hover:text-white transition-colors duration-300 p-2"
         (click)="toggleSidebar()"
       >
         <svg
@@ -128,11 +104,13 @@
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
-            d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
+            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
           />
         </svg>
       </button>
-      <h1 class="text-xl font-semibold text-gray-800">Dashboard</h1>
+      @if (!isSidebarOpen) {
+        <span class="font-exo text-2xl font-bold text-white">Rêve</span>
+      }
     </header>
 
     <!-- Details drawer opens over this area only, so the navigation stays usable -->

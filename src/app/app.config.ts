@@ -12,6 +12,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {authInterceptor} from '@/app/core/auth/auth-interceptor.service';
 import { initializeApp } from '@/app/core/app.provider';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { PolishPaginatorIntl } from '@/app/core/paginator/polish-paginator-intl';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +22,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(withInterceptors([authInterceptor])),
     importProvidersFrom(FormsModule),
+    { provide: MatPaginatorIntl, useClass: PolishPaginatorIntl },
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,

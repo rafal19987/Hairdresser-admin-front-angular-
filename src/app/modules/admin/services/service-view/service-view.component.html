@@ -6,7 +6,7 @@
 
         <a
         routerLink="/dashboard/services"
-        class="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1 mb-1"
+        class="text-sm text-muted/70 hover:text-silver flex items-center gap-1 mb-1"
         >
         ← Wróć do listy
         </a>
@@ -22,8 +22,8 @@
       </button>
     </div>
 
-    <div class="bg-white rounded-lg border p-4">
-      <h3 class="text-sm font-semibold text-gray-500 uppercase mb-4">Edytuj usługę</h3>
+    <div class="bg-surface border p-4">
+      <h3 class="text-sm font-semibold text-muted uppercase mb-4">Edytuj usługę</h3>
 
       @if (form) {
         <form class="flex flex-col gap-4" [formGroup]="form">

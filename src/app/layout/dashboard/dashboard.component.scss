@@ -1,0 +1,38 @@
+// Navigation links like on the salon website: grey text with a gold underline
+.nav-link {
+  position: relative;
+  align-self: flex-start;
+  padding: 0.5rem 0;
+  font-size: 1.125rem;
+  color: #bebebe;
+  transition: color 0.3s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0.25rem;
+    height: 2px;
+    width: 0;
+    background: #c59d5f;
+    transition: width 0.3s;
+  }
+
+  &:hover,
+  &.active {
+    color: #ffffff;
+
+    &::after {
+      width: 100%;
+    }
+  }
+
+  &--sub {
+    font-size: 1rem;
+  }
+}
+
+// The submenu toggle spans the whole row, so its underline would too
+button.nav-link.w-full::after {
+  display: none;
+}
