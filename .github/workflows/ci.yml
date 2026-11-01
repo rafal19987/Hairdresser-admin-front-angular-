@@ -1,0 +1,34 @@
+name: CI
+
+# Required checks for pull requests into develop and master
+on:
+  pull_request:
+    branches: [develop, master]
+  push:
+    branches: [develop]
+
+jobs:
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # The runner image ships Chrome; ChromeHeadless needs no display
+      - run: npx ng test --watch=false --browsers=ChromeHeadless
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx ng build
